@@ -1,0 +1,1766 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DASS eSanté — Project Intelligence Cockpit v3.7</title>
+<style>
+:root{--ink:#0f1923;--paper:#f5f4f0;--surface:#fff;--border:#d8d4cc;--bl:#ede9e3;--red:#c0392b;--rb:#fdf0ef;--amber:#d68910;--ab:#fef9ec;--green:#1a7a4a;--gb:#edfaf3;--blue:#1a5276;--bb:#eaf2fb;--grey:#7f8c8d;--grb:#f4f4f4;--nc:#003f8a;--mono:'Courier New',monospace;--body:-apple-system,'Segoe UI',system-ui,sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--body);background:var(--paper);color:var(--ink);font-size:13px;line-height:1.5;}
+.hdr{background:var(--nc);color:#fff;border-bottom:3px solid var(--red);}
+.ht{display:flex;align-items:center;justify-content:space-between;padding:14px 24px 10px;}
+.htitle{font-size:18px;font-weight:bold;}.htitle span{color:#aed6f1;}
+.hmeta{font-size:11px;opacity:.7;text-align:right;}.hmeta strong{opacity:1;color:#aed6f1;}
+.nav{display:flex;border-top:1px solid rgba(255,255,255,.15);}
+.nt{padding:8px 18px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;color:rgba(255,255,255,.65);border:none;background:none;border-bottom:2px solid transparent;}
+.nt:hover{color:#fff;}.nt.active{color:#fff;border-bottom-color:#aed6f1;background:rgba(255,255,255,.08);}
+.banner{padding:10px 16px;display:flex;align-items:center;gap:10px;font-size:12px;font-weight:600;flex-wrap:wrap;}
+.banner.amber{background:var(--amber);color:#fff;}
+.bdy{padding:20px 24px;max-width:1400px;margin:0 auto;}
+.hr{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:16px;}
+.tile{background:var(--surface);border:1px solid var(--border);padding:12px 14px;position:relative;}
+.tile::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.tile.red::before{background:var(--red);}.tile.amber::before{background:var(--amber);}
+.tile.green::before{background:var(--green);}.tile.blue::before{background:var(--blue);}.tile.grey::before{background:var(--grey);}
+.tl{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--grey);margin-bottom:6px;}
+.tv{font-size:26px;font-weight:800;font-family:var(--mono);line-height:1;}
+.tv.red{color:var(--red);}.tv.amber{color:var(--amber);}.tv.green{color:var(--green);}.tv.blue{color:var(--blue);}.tv.grey{color:var(--grey);}
+.ts{font-size:10px;color:var(--grey);margin-top:3px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.card{background:var(--surface);border:1px solid var(--border);margin-bottom:12px;}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--bl);background:#fafaf8;}
+.ct{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#2c3e50;}
+.cb{font-size:10px;font-weight:700;padding:2px 8px;letter-spacing:.04em;}
+.cb-red{background:var(--rb);color:var(--red);}.cb-amber{background:var(--ab);color:var(--amber);}
+.cb-green{background:var(--gb);color:var(--green);}.cb-blue{background:var(--bb);color:var(--blue);}.cb-grey{background:var(--grb);color:var(--grey);}
+.cbdy{padding:12px 14px;}
+.sec{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--grey);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.sec::after{content:'';flex:1;height:1px;background:var(--border);}
+.tab{display:none;}.tab.active{display:block;}
+table{width:100%;border-collapse:collapse;}
+th{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--grey);text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);background:#fafaf8;font-weight:700;}
+td{padding:7px 8px;border-bottom:1px solid var(--bl);font-size:11px;vertical-align:top;}
+.pill{display:inline-block;font-size:9px;font-weight:700;padding:2px 7px;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;}
+.p-r{background:var(--rb);color:var(--red);}.p-a{background:var(--ab);color:var(--amber);}
+.p-g{background:var(--gb);color:var(--green);}.p-gr{background:var(--grb);color:var(--grey);}.p-b{background:var(--bb);color:var(--blue);}
+.pb{background:var(--bl);height:4px;margin-top:4px;}.pf{height:4px;}
+.pf.r{background:var(--red);}.pf.a{background:var(--amber);}.pf.g{background:var(--green);}.pf.gr{background:var(--grey);}
+.ev{border-left:3px solid;padding:8px 10px;margin-bottom:8px;font-size:11px;}
+.ev.fact{border-color:var(--green);background:var(--gb);}.ev.inf{border-color:var(--amber);background:var(--ab);}
+.ev.gap{border-color:var(--red);background:var(--rb);}.ev.ok{border-color:var(--blue);background:var(--bb);}
+.evl{font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px;}
+.ev.fact .evl{color:var(--green);}.ev.inf .evl{color:var(--amber);}.ev.gap .evl{color:var(--red);}.ev.ok .evl{color:var(--blue);}
+.rr{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--bl);}
+.rr:last-child{border-bottom:none;}
+.rid{font-family:var(--mono);font-size:9px;color:var(--grey);flex-shrink:0;width:80px;}
+.rsev{width:65px;flex-shrink:0;}
+.rb2{flex:1;}.rt{font-size:11px;font-weight:600;}.rd{font-size:10px;color:var(--grey);margin-top:2px;}
+.tli{display:flex;gap:12px;margin-bottom:10px;position:relative;}
+.tli:not(:last-child)::after{content:'';position:absolute;left:11px;top:22px;bottom:-10px;width:1px;background:var(--border);}
+.tldot{width:22px;height:22px;border-radius:50%;border:2px solid;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;margin-top:1px;background:#fff;}
+.tldot.r{border-color:var(--red);color:var(--red);}.tldot.a{border-color:var(--amber);color:var(--amber);}
+.tldot.g{border-color:var(--green);color:var(--green);}.tldot.gr{border-color:var(--grey);color:var(--grey);}
+.tlname{font-size:12px;font-weight:600;}.tldet{font-size:11px;color:var(--grey);margin-top:2px;}
+.tltag{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;margin-top:3px;letter-spacing:.04em;}
+.mono{font-family:var(--mono);font-size:10px;color:var(--grey);}
+.bold{font-weight:600;}
+.gb2{height:14px;border-radius:2px;display:flex;align-items:center;padding:0 4px;font-size:8px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;}
+.gb2.r{background:var(--red);}.gb2.a{background:var(--amber);}.gb2.b{background:var(--blue);}.gb2.gr{background:#bdc3c7;color:var(--ink);}.gb2.g{background:var(--green);}
+.ftr{border-top:1px solid var(--border);padding:10px 24px;display:flex;justify-content:space-between;font-size:10px;color:var(--grey);background:#fafaf8;margin-top:20px;}
+.kgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.ki{background:#fafaf8;border:1px solid var(--bl);padding:10px 12px;}
+.kl{font-size:10px;color:var(--grey);font-weight:600;text-transform:uppercase;}.kv{font-size:18px;font-weight:800;font-family:var(--mono);margin:4px 0 2px;}.ks{font-size:10px;color:var(--grey);}
+/* PANNEAU LATÉRAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;}
+.overlay.open{display:block;}
+.panel{position:fixed;right:0;top:0;bottom:0;width:540px;background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,.18);z-index:101;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s ease;}
+.panel.open{transform:translateX(0);}
+.panel-hdr{background:var(--nc);color:#fff;padding:16px 20px;display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0;}
+.panel-title{font-size:14px;font-weight:700;line-height:1.3;}
+.panel-sub{font-size:11px;opacity:.7;margin-top:3px;}
+.panel-close{background:none;border:none;color:#fff;font-size:20px;cursor:pointer;line-height:1;opacity:.8;flex-shrink:0;padding:0 0 0 12px;}
+.panel-close:hover{opacity:1;}
+.panel-body{flex:1;overflow-y:auto;padding:16px 20px;}
+.panel-ftr{padding:12px 20px;border-top:1px solid var(--border);background:#fafaf8;flex-shrink:0;display:flex;gap:8px;flex-wrap:wrap;}
+.panel-ftr a{display:inline-flex;align-items:center;gap:6px;background:var(--nc);color:#fff;padding:8px 16px;font-size:12px;font-weight:600;text-decoration:none;border-radius:2px;}
+.panel-ftr a:hover{background:var(--blue);}
+.psec{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--grey);margin:14px 0 6px;display:flex;align-items:center;gap:8px;}
+.psec::after{content:'';flex:1;height:1px;background:var(--border);}
+.ptag{display:inline-block;font-size:10px;font-weight:700;padding:3px 8px;margin:2px 2px 2px 0;border-radius:2px;}
+.pitem{padding:6px 0;border-bottom:1px solid var(--bl);font-size:11px;line-height:1.6;}
+.pitem:last-child{border-bottom:none;}
+.clickrow{cursor:pointer;transition:background .12s;}
+.clickrow:hover td{background:var(--bb)!important;}
+.clickrow td:first-child::before{content:'▶';font-size:8px;color:var(--blue);margin-right:5px;opacity:.5;}
+.tag-dass{background:#003f8a;color:#fff;}.tag-dinum{background:#8e44ad;color:#fff;}
+.tag-cafat{background:#1a7a4a;color:#fff;}.tag-cht{background:#c0392b;color:#fff;}
+.tag-province{background:#d68910;color:#fff;}.tag-gouv{background:#2c3e50;color:#fff;}
+.tag-copil{background:#1a5276;color:#fff;}.tag-externe{background:#7f8c8d;color:#fff;}
+.tag-acadys{background:#2e4057;color:#fff;}
+.mtag{display:inline-block;font-size:9px;font-weight:800;padding:2px 7px;border-radius:2px;text-transform:uppercase;letter-spacing:.04em;}
+.mrow{cursor:default;}.mrow:hover td{background:#fafaf8!important;}
+.statut-passe{color:var(--grey);}.statut-avenir{color:var(--blue);font-weight:600;}
+.statut-annule{color:var(--red);text-decoration:line-through;}
+.rr-a-venir{background:var(--bb);}.rr-passee{background:#fbfbfa;}.rr-annulee{background:var(--rb);}
+.loading{text-align:center;padding:40px;color:var(--grey);font-size:13px;}
+.rel-card{background:var(--surface);border:1px solid var(--border);padding:12px 14px;margin-bottom:8px;}
+.rel-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.rel-org{font-size:12px;font-weight:700;color:var(--nc);}
+.rel-count{font-size:11px;color:var(--grey);}
+.rel-last{font-size:10px;color:var(--grey);margin-top:4px;}
+.rel-actions{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;}
+.ra{font-size:9px;font-weight:700;padding:2px 6px;background:var(--rb);color:var(--red);}
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay" onclick="closePanel()"></div>
+<div class="panel" id="panel">
+  <div class="panel-hdr">
+    <div><div class="panel-title" id="panel-title">—</div><div class="panel-sub" id="panel-sub">—</div></div>
+    <button class="panel-close" onclick="closePanel()">✕</button>
+  </div>
+  <div class="panel-body" id="panel-body"></div>
+  <div class="panel-ftr" id="panel-ftr"></div>
+</div>
+
+<div class="hdr">
+  <div class="ht">
+    <div style="display:flex;align-items:center;gap:16px">
+      <div style="width:1px;height:36px;background:rgba(255,255,255,.25)"></div>
+      <div>
+        <div class="htitle">DASS eSanté — <span>Project Intelligence Cockpit</span> <span style="font-size:11px;opacity:.5">v3.7</span></div>
+        <div style="font-size:10px;opacity:.6;margin-top:2px">Cellule e-Santé · Direction des Affaires Sanitaires et Sociales · Nouvelle-Calédonie</div>
+      </div>
+    </div>
+    <div class="hmeta">
+      <div><strong id="hdr-date">—</strong> — <span id="hdr-mplus">—</span> · <span id="hdr-jmoins">—</span> Phase 1</div>
+      <div>Contrat ACADYS N°339C25 · Cadre normatif : HAS / ANS / IHE / HL7 FHIR R4</div>
+      <div style="margin-top:3px"><span style="background:var(--green);padding:1px 6px;font-size:9px;font-weight:800">✓ TUKUMULI NOMMÉ 05/08 · Présentation en planification · Dossier PRÊT</span></div>
+    </div>
+  </div>
+  <div class="nav">
+    <button class="nt active" onclick="showTab('dashboard',this)">Dashboard</button>
+    <button class="nt" onclick="showTab('deliverables',this)">Livrables (4)</button>
+    <button class="nt" onclick="showTab('demiheure',this)">1/2h Santé (6)</button>
+    <button class="nt" onclick="showTab('timeline',this)">Timeline</button>
+    <button class="nt" onclick="showTab('risks',this)">Risques (9)</button>
+    <button class="nt" onclick="showTab('actions',this)">Backlog (<span class="backlog-count">…</span>)</button>
+    <button class="nt" onclick="showTab('documents',this)">Documents (34)</button>
+    <button class="nt" onclick="showTab('mails',this)">Mails</button>
+    <button class="nt" onclick="showTab('reunions',this)">Réunions</button>
+    <button class="nt" onclick="showTab('relations',this)">Relations</button>
+    <button class="nt" onclick="showTab('decisions',this)">Décisions (<span class="decisions-count">…</span>)</button>
+    <button class="nt" onclick="showTab('reports',this)">Reports (<span class="reports-count">…</span>)</button>
+    <button class="nt" onclick="showTab('monitoring',this)">Monitoring</button>
+  </div>
+</div>
+<div class="banner amber">
+  <span>⚡ J-16 (06/09/2026) :</span>
+  <span>DEL-001 v1.4 ✓ · DEL-002 v1.0 ✓ · DEL-003 v1.2 ✓ · DEL-004 v1.2 ✓ · <strong>Phase 1 : 4/4 livrables produits</strong></span>
+  <span id="jal001-banner" style="margin-left:auto"></span>
+</div>
+
+<!-- DASHBOARD -->
+<div id="tab-dashboard" class="tab active"><div class="bdy">
+  <div class="hr">
+    <div class="tile amber jal001-tile"><div class="tl">Santé globale</div><div class="tv amber jal001-tv" id="jal001-tile-val"></div><div class="ts" id="jal001-tile-note"></div></div>
+    <div class="tile green"><div class="tl">Phase 1</div><div class="tv green">J-16</div><div class="ts">4/4 livrables produits</div></div>
+    <div class="tile green"><div class="tl">Dossier TUKUMULI</div><div class="tv green">PRÊT</div><div class="ts">PPT 26 slides + FDR v0.4</div></div>
+    <div class="tile green"><div class="tl">Livrables produits</div><div class="tv green">4/4</div><div class="ts">DEL-001 v1.4, 002, 003, 004 ✓</div></div>
+    <div class="tile blue"><div class="tl">Corpus analysé</div><div class="tv blue">30/30</div><div class="ts">CR DPASS 05/08 intégré</div></div>
+    <div class="tile green"><div class="tl">Daily Run 07:00</div><div class="tv green">ACTIF</div><div class="ts">Pacific/Noumea</div></div>
+  </div>
+  
+<div class="sec">Programme de la semaine</div>
+<div class="card" style="border-left:3px solid var(--nc)">
+  <div class="ch"><span class="ct">Vue synthétique — semaine en cours (lundi → dimanche)</span></div>
+  <div class="cbdy">
+    <div id="prog-week-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:12px"></div>
+    <div style="display:flex;align-items:center;gap:8px;margin:0 0 4px">
+      <span class="psec" style="margin:0;flex:none">📧 Mails de la semaine</span>
+    </div>
+    <div id="prog-mails" class="loading" style="max-height:110px;overflow-y:auto">Chargement...</div>
+    <div class="psec" style="margin-top:14px">🧭 Synthèse</div>
+    <div id="prog-synthese" class="ev ok" style="margin-top:6px"></div>
+  </div>
+</div>
+<div class="g2">
+    <div>
+      <div class="sec">Cadre normatif — HAS / ANS CI-SIS / IHE / HL7 FHIR R4</div>
+      <div class="card"><div class="cbdy">
+        <div class="ev ok"><div class="evl">HAS</div>Recommandations de bonnes pratiques cliniques · Guides numériques · Conduite du changement et adoption soignants.</div>
+        <div class="ev ok"><div class="evl">ANS / CI-SIS</div>Cadre d'Interopérabilité des SIS · Profils de conformité · Référentiel sécurité · Identité numérique.</div>
+        <div class="ev ok"><div class="evl">IHE International</div>Profils d'intégration applicables (IPS, PIXm/PDQm, XDS, ATNA, mXDE, Claim) — à préciser dans l'architecture cible.</div>
+        <div class="ev ok"><div class="evl">HL7 FHIR R4</div>Format d'échange structuré pour les chantiers relevant de ce standard — ressources à préciser par chantier.</div>
+      </div></div>
+      <div class="sec">Faits terrain — CR DPASS Province Sud 05/08/2026 (NOUVEAU)</div>
+      <div class="card"><div class="cbdy">
+        <div class="ev fact"><div class="evl">FAIT — Province Sud</div>DPASS gère 56 000 consultations/an, 5 CMS en brousse. Téléconsultation opérationnelle malgré absence d'arrêtés d'application. Logiciel dominant : Asclepios (70% médecins libéraux).</div>
+        <div class="ev gap"><div class="evl">GAP — GIP SI2S</div>CAFAT n'a pas intégré le GIP SI2S pour des raisons de gouvernance. Les mutuelles et provinces y sont entrées. Interface mandaté pour la télétransmission FSE.</div>
+        <div class="ev gap"><div class="evl">GAP — DINUM</div>Aucune architecture du réseau d'échange de données de santé proposée à ce jour. La DINUM attend les propositions d'Izhar.</div>
+        <div class="ev inf"><div class="evl">ENJEU — Gouvernance HIE</div>Moitié des acteurs nécessaires à l'écosystème e-santé NC n'existent pas. Qui gouvernera le HIE (réseau d'échange) ? Question non tranchée.</div>
+        <div class="ev gap"><div class="evl">GAP — CODIR 24/08 — Référentiel professionnels de santé (RSNC)</div>Le référentiel fonctionne mais la couche API n'est pas finalisée : pas d'API exposée, pas de flux sortants définis. Développements actuellement stoppés. Séquence retenue : cadrer d'abord le CI-SIS NC (ACT-019), avant d'engager les travaux techniques (ACT-016). Lié à RISK-002.</div>
+        <div class="ev inf"><div class="evl">ENJEU — Codes métiers hétérogènes</div>Les codes métiers varient selon les employeurs (ex. "infirmier" vs "IDE" vs "infirmier spécialisé"). Tiare (ancienne version HR Access, service public) : tables de correspondance à définir. Référentiel établissements plus simple (n° RIDEC, dénomination sociale).</div>
+      </div></div>
+    </div>
+    <div>
+      <div class="sec">Situation politique — mise à jour 26/08/2026</div>
+      <div class="card"><div class="cbdy">
+        <div class="ev ok"><div class="evl">FAIT — 31/07/2026</div>19e gouvernement NC élu. <strong>Milakulo TUKUMULI</strong> nommé Président avec portefeuille Santé, Protection sociale, Transports.</div>
+        <div class="ev fact"><div class="evl">FAIT — 24/07/2026 — Lettre N°2026-DASS-405964</div>Marie-Laure MESTRE valide le diagnostic systémique, confirme 4 arbitrages. Réserve : la stratégie territoriale relève du futur gouvernement NC.</div>
+        <div class="ev inf"><div class="evl">NOUVELLE PROCÉDURE — CODIR du 24/08</div>TUKUMULI part vendredi 28/08 en métropole, retour le <strong>11/09/2026</strong>. À son retour : entretien individuel de 15 min avec chaque directeur + le Secrétaire Général (pas de présentation dédiée en séance). Dans l'intervalle, Marie-Laure MESTRE soumet le dossier complet au Secrétaire Général du Gouvernement pour approbation. Jalon suivi désormais : <strong>mise à disposition de la lettre de mission d'Izhar</strong> (remplace la présentation PPT comme jalon de suivi).</div>
+        <div class="ev inf"><div class="evl">GOUVERNANCE — Principe du 19e gouvernement</div>Séparation stricte administratif/politique : chaque secteur a un membre dédié, les directeurs ne font plus le lien entre membres. Si un sujet touche plusieurs secteurs, c'est au membre politique de voir son collègue — <strong>point de vigilance pour ACT-012 (COPIL Écosystème DASS/DINUM/CAFAT/CHT)</strong>, qui est un sujet transverse.</div>
+        <div class="ev inf"><div class="evl">CALENDRIER — Feuilles de route 6 mois</div>Chaque membre du gouvernement a 6 mois pour construire sa feuille de route avec les directions concernées. Ces feuilles serviront de base au vrai discours de politique générale et au budget de l'année prochaine.</div>
+        <div class="ev gap"><div class="evl">BUDGET 2027</div>Effort demandé à toutes les directions, objectif d'équilibre budgétaire présenté en mars au plus tard. Rationalisation de la dépense publique. Le PEA est mis en pause (pas enterré) — pas prioritaire sur les 6 prochains mois.</div>
+        <div class="ev ok"><div class="evl">RYTHME — CODIR DASS</div>Gouvernance hebdomadaire maintenue sans interruption (CODIR 23/08, 25/08, prochain 30/08).</div>
+      </div></div>
+      <div class="sec">Top risques actifs</div>
+      <div class="card"><div class="cbdy" style="padding:8px 14px">
+        <div class="rr"><div class="rsev"><span class="pill jal001-badge p-a">EN RÉSOL.</span></div><div class="rid">JAL-001</div><div class="rb2"><div class="rt jal001-label">Lettre de mission (ex-arbitrage TUKUMULI)</div><div class="rd jal001-detail">TUKUMULI absent jusqu'au 11/09 · Dossier soumis au SG du Gouvernement dans l'intervalle · Entretien 15 min au retour</div></div></div>
+        <div id="dashboard-risks-top"></div>
+      </div></div>
+    </div>
+  </div>
+</div></div>
+
+<!-- LIVRABLES -->
+<div id="tab-deliverables" class="tab"><div class="bdy">
+  <div class="sec">Livrables Phase 1 — Cliquer sur une ligne pour le détail / modifier</div>
+  <div class="card"><div class="cbdy" style="padding:0">
+    <table><thead><tr><th>ID</th><th>Livrable</th><th>Échéance</th><th>Statut</th><th>Complétude</th><th>Version</th></tr></thead><tbody id="deliverables-tbody">
+      <tr><td colspan="6" style="text-align:center;color:var(--grey);padding:20px">Chargement...</td></tr>
+    </tbody></table>
+  </div></div>
+</div></div>
+
+<!-- 1/2 HEURE SANTÉ -->
+<div id="tab-demiheure" class="tab"><div class="bdy">
+  <div class="sec">"La 1/2 heure de la santé" — considérés comme livrables · Cliquer pour le détail · <a href="https://drive.google.com/drive/folders/1BA9nO2b_EuEe1nleflMIVc63liRpSo4y" target="_blank" style="color:var(--blue)">📁 Dossier Drive</a></div>
+  <div class="card"><div class="cbdy" style="padding:0">
+    <table><thead><tr><th>Date</th><th>Titre</th><th>Type</th><th>Statut</th></tr></thead><tbody>
+      <tr class="clickrow" onclick="showDoc('DEMIHEURE_1')">
+        <td class="mono">21/07/2026</td><td class="bold">Introduction à la Santé Numérique</td>
+        <td>PPTX — Session 1</td>
+        <td><span class="pill p-g">✓ Présenté</span></td>
+      </tr>
+      <tr class="clickrow" onclick="showDoc('DEMIHEURE_2')">
+        <td class="mono">26/08/2026</td><td class="bold">Gouvernance et Interopérabilité des Identités en Santé</td>
+        <td>PPTX — Session 2</td>
+        <td><span class="pill p-g">✓ Présenté</span></td>
+      </tr>
+      <tr class="clickrow" onclick="showDoc('DEMIHEURE_2_VIDEO')">
+        <td class="mono">26/08/2026</td><td class="bold">Enregistrement — Gouvernance des Identités</td>
+        <td>MP4 — Session 2</td>
+        <td><span class="pill p-g">✓ Disponible</span></td>
+      </tr>
+      <tr class="clickrow" onclick="showDoc('DEMIHEURE_2_AUDIO')">
+        <td class="mono">25/08/2026</td><td class="bold">La face cachée du numéro RPPS</td>
+        <td>Audio — Approfondissement</td>
+        <td><span class="pill p-g">✓ Disponible</span></td>
+      </tr>
+      <tr class="clickrow" onclick="showDoc('DEMIHEURE_2_MPI1')">
+        <td class="mono">25/08/2026</td><td class="bold">Digital Health Identity and MPI</td>
+        <td>PPTX — Ressource complémentaire</td>
+        <td><span class="pill p-gr">Support</span></td>
+      </tr>
+      <tr class="clickrow" onclick="showDoc('DEMIHEURE_2_MPI2')">
+        <td class="mono">25/08/2026</td><td class="bold">MPI Digital Health Identity Foundations</td>
+        <td>PPTX — Ressource complémentaire (15 modules)</td>
+        <td><span class="pill p-gr">Support</span></td>
+      </tr>
+    </tbody></table>
+  </div></div>
+</div></div>
+
+<!-- TIMELINE -->
+<div id="tab-timeline" class="tab"><div class="bdy">
+  <div class="sec">Timeline chantiers — dates réelles, prévu vs prévisionnel, % avancement</div>
+  <div class="card"><div class="ch"><span class="ct" id="timeline-summary">Chargement...</span></div>
+  <div class="cbdy">
+    <div id="timeline-months" style="position:relative;height:20px;margin-left:220px;border-bottom:1px solid var(--border);font-size:9px;color:var(--grey)"></div>
+    <div style="font-size:10px;font-weight:700;color:var(--ink);margin:8px 0 4px 0">NIVEAU 1 — Mes livrables de mission (contrat AMOA, MIL-001 à 007)</div>
+    <div id="timeline-macro"></div>
+    <div style="font-size:10px;font-weight:700;color:var(--ink);margin:16px 0 4px 0;border-top:2px solid var(--ink);padding-top:10px">NIVEAU 2 — Phasage du projet eSanté NC (T1-T4, source PPT Gouvernement)</div>
+    <div id="timeline-trimestres"></div>
+    <div style="font-size:10px;font-weight:700;color:var(--ink);margin:16px 0 4px 0;border-top:2px solid var(--ink);padding-top:10px">NIVEAU 3 — Chantiers détaillés, groupés par trimestre</div>
+    <div id="timeline-body"></div>
+  </div></div>
+  <div class="sec" style="margin-top:14px">Légende</div>
+  <div style="font-size:10px;color:var(--grey);display:flex;gap:16px;flex-wrap:wrap">
+    <span><span style="display:inline-block;width:10px;height:10px;background:repeating-linear-gradient(45deg,#fff,#fff 2px,#333 2px,#333 4px);border:1px solid #333;vertical-align:middle"></span> Baseline (prévu initial)</span>
+    <span><span style="display:inline-block;width:10px;height:10px;background:#4a6b8a;vertical-align:middle"></span> Planifié</span>
+    <span><span style="display:inline-block;width:10px;height:10px;background:#c9700a;vertical-align:middle"></span> En cours</span>
+    <span><span style="display:inline-block;width:10px;height:10px;background:#b01e0e;vertical-align:middle"></span> Bloqué / En retard</span>
+    <span><span style="display:inline-block;width:10px;height:10px;background:#0f7a3d;vertical-align:middle"></span> Terminé</span>
+    <span><span style="display:inline-block;width:3px;height:10px;background:#e60000;vertical-align:middle"></span> Aujourd'hui</span>
+  </div>
+</div></div>
+
+<!-- RISQUES -->
+<div id="tab-risks" class="tab"><div class="bdy">
+  <div style="margin-bottom:10px"><button onclick="editRisk('NEW')" style="background:var(--ink);color:#fff;border:none;padding:8px 16px;font-size:11px;font-weight:600;cursor:pointer">+ Nouveau risque</button></div>
+  <div class="g2">
+    <div><div class="sec">Risques critiques (<span class="risks-critical-count">…</span>)</div>
+    <div class="card"><div class="cbdy" style="padding:8px 14px">
+      <div class="rr"><div class="rsev"><span class="pill jal001-badge p-a">EN RÉSOL.</span></div><div class="rid">JAL-001</div><div class="rb2"><div class="rt jal001-label">Lettre de mission (ex-arbitrage TUKUMULI)</div><div class="rd jal001-detail">TUKUMULI absent jusqu'au 11/09 · Dossier soumis au SG du Gouvernement dans l'intervalle · Entretien 15 min au retour</div></div></div>
+      <div id="risks-critical-body"></div>
+    </div></div></div>
+    <div><div class="sec">Risques hauts / gérés (<span class="risks-high-count">…</span>)</div>
+    <div class="card"><div class="cbdy" style="padding:8px 14px">
+      <div id="risks-high-body"></div>
+    </div></div></div>
+  </div>
+</div></div>
+
+
+<!-- ACTIONS -->
+<div id="tab-actions" class="tab"><div class="bdy">
+  <div style="margin-bottom:10px"><button onclick="editAction('NEW')" style="background:var(--ink);color:#fff;border:none;padding:8px 16px;font-size:11px;font-weight:600;cursor:pointer">+ Nouvelle action</button></div>
+  <div class="card"><div class="cbdy" style="padding:0">
+    <table><thead><tr><th>ID</th><th>Action</th><th>Responsable</th><th>Échéance</th><th>Statut</th></tr></thead><tbody id="backlog-tbody">
+      <tr><td colspan="5" style="text-align:center;color:var(--grey);padding:20px">Chargement...</td></tr>
+    </tbody></table>
+  </div></div>
+</div></div>
+
+<!-- DOCUMENTS -->
+<div id="tab-documents" class="tab"><div class="bdy">
+  <div class="sec">Corpus DASS PMO — 30/30 · Cliquer sur une ligne pour le résumé et accès Drive</div>
+  <div class="card"><div class="cbdy" style="padding:0">
+    <table><thead><tr><th>Tier</th><th>Document</th><th>Type</th><th>Date</th><th>Statut</th><th>Pertinence</th></tr></thead><tbody>
+      <tr class="clickrow" onclick="showDoc('CONTRAT')"><td><span class="pill p-r">TIER 1</span></td><td class="bold">Contrat N°339C25 — Directeur programme e-santé NC</td><td>PDF</td><td class="mono">05/02/2026</td><td><span class="pill p-g">✓ Analysé</span></td><td>Référence contractuelle absolue</td></tr>
+      <tr class="clickrow" onclick="showDoc('PPT_GOV')"><td><span class="pill p-r">TIER 1</span></td><td class="bold">PPT Gouvernement NC eSanté — 26 slides · Dossier TUKUMULI</td><td>PPT</td><td class="mono">10/08/2026</td><td><span class="pill p-g">✓ Analysé</span></td><td>Référence décisionnelle T1</td></tr>
+      <tr class="clickrow" onclick="showDoc('RAPPORT_ETONNEMENT')"><td><span class="pill p-a">TIER 2</span></td><td class="bold">Rapport d'étonnement stratégique — 6 piliers OMS</td><td>Word</td><td class="mono">17/07/2026</td><td><span class="pill p-g">✓ Analysé</span></td><td>Diagnostic fondateur · Validé par DASS</td></tr>
+      <tr class="clickrow" onclick="showDoc('FDR_V04')"><td><span class="pill p-a">TIER 2</span></td><td class="bold">FDR Numérique en Santé NC v0.4 — 15 sections · SEULE RÉFÉRENCE</td><td>Word</td><td class="mono">10/08/2026</td><td><span class="pill p-g">✓ Analysé</span></td><td>Référence programmatique de travail</td></tr>
+      <tr class="clickrow" onclick="showDoc('PLAN_DIRECTEUR')"><td><span class="pill p-a">TIER 2</span></td><td class="bold">Plan Directeur et Opérationnel e-Santé DASS-NC · 135M XPF</td><td>Word</td><td class="mono">—</td><td><span class="pill p-g">✓ Analysé</span></td><td>Budget · RACI · Architecture HDS</td></tr>
+      <tr class="clickrow" onclick="showDoc('LETTRE_DASS')"><td><span class="pill p-b">TIER 3</span></td><td class="bold">Réponse DASS N°2026-DASS-405964 — SIGNÉE MESTRE · 4 arbitrages</td><td>PDF</td><td class="mono">24/07/2026</td><td><span class="pill p-g">✓ Analysé</span></td><td>Décisions officielles DEC-001 à DEC-008</td></tr>
+      <tr class="clickrow" onclick="showDoc('CTGISN')"><td><span class="pill p-b">TIER 3</span></td><td class="bold">CTGISN — Cycle Territorial Gouvernance Santé Numérique NC</td><td>Word</td><td class="mono">—</td><td><span class="pill p-g">✓ Analysé</span></td><td>Gouvernance territoriale · Base DEL-006</td></tr>
+      <tr class="clickrow" onclick="showDoc('ECOSYSTEME')"><td><span class="pill p-gr">TIER 4</span></td><td class="bold">Ecosystème e-Santé NC — 35 fonctions · RACI 5 axes</td><td>Google Doc</td><td class="mono">20/07/2026</td><td><span class="pill p-g">✓ Analysé</span></td><td>Base DEL-002 · 14 fonctions non couvertes (🔴)</td></tr>
+      <tr class="clickrow" onclick="showDoc('MATRICE_RACI')"><td><span class="pill p-gr">TIER 4</span></td><td class="bold">Matrice RACI — 5 domaines · Gouvernance DASS/DINUM/CAFAT</td><td>Google Sheet</td><td class="mono">03/08/2026</td><td><span class="pill p-g">✓ Analysé</span></td><td>Répartition formelle des rôles · Base §5.4</td></tr>
+      <tr class="clickrow" onclick="showDoc('ARCHI_DASS')"><td><span class="pill p-b">TIER 2</span></td><td class="bold">Architecture Cible SI DASS-NC (réponse au diagnostic Kortex/DINUM)</td><td>PPTX</td><td class="mono">12/08/2026</td><td><span class="pill p-g">✓ Analysé</span></td><td>ERP Odoo + couche interop · jamais dupliquer DINUM</td></tr>
+      <tr class="clickrow" onclick="showDoc('RSN')"><td><span class="pill p-r">TIER 1</span></td><td class="bold">Rapport Stratégique RSN Ouvert et Interopérable</td><td>Google Doc</td><td class="mono">22/07/2026</td><td><span class="pill p-g">✓ Analysé</span></td><td>FHIR/OpenEHR/OMOP · MPI Jaro-Winkler · cite déjà "CI-SIS NC"</td></tr>
+      <tr class="clickrow" onclick="showDoc('EDCH_FHIR')"><td><span class="pill p-gr">TIER 5</span></td><td class="bold">Analyse processus EDCH / transition FHIR One Health</td><td>Google Doc</td><td class="mono">27/07/2026</td><td><span class="pill p-g">✓ Analysé</span></td><td>Cas d'usage FHIR hors périmètre RSNC (eau/environnement)</td></tr>
+      <tr class="clickrow" onclick="showDoc('MATURITE')"><td><span class="pill p-a">TIER 4</span></td><td class="bold">Étude territoriale de maturité de la santé numérique NC</td><td>Google Doc</td><td class="mono">08/07/2026</td><td><span class="pill p-a">⏳ Projet d'étude — non réalisée</span></td><td>Correction : méthodologie proposée, pas un score existant</td></tr>
+      <tr class="clickrow" onclick="showDoc('LISTE_ACTEURS')"><td><span class="pill p-gr">TIER 4</span></td><td class="bold">Liste des acteurs eSanté NC</td><td>Excel</td><td class="mono">19/08/2026</td><td><span class="pill p-gr">= Doublon ECOSYSTEME</span></td><td>Correction : même contenu que l'Écosystème NC (37 fonctions)</td></tr>
+      <tr class="clickrow" onclick="showDoc('FDR_V02')"><td><span class="pill p-gr" style="text-decoration:line-through">EXCLUS</span></td><td style="color:var(--grey);text-decoration:line-through">FDR v0.2 (06/08/2026) — brouillon historique</td><td>Google Doc</td><td class="mono">06/08/2026</td><td><span class="pill p-gr">IGNORÉ</span></td><td>Seule FDR v0.4 fait référence</td></tr>
+      <tr class="clickrow" onclick="showDoc('CR_DPASS')"><td><span class="pill p-b">TIER 3</span></td><td class="bold">CR Réunion DPASS Province Sud 05/08/2026 — FRIAT · MEDEVIELLE · STROUSE — NOUVEAU</td><td>Word</td><td class="mono">05/08/2026</td><td><span class="pill p-g">✓ Analysé</span></td><td>Terrain · GIP SI2S · Téléconsult. · HIE gouvernance</td></tr>
+      <tr class="clickrow" onclick="showDoc('CR_CAFAT')"><td><span class="pill p-gr">TIER 6</span></td><td class="bold">CR Réunion CAFAT 13/08/2026 · Programme SI 5 ans ~5 Mds XPF</td><td>Word</td><td class="mono">13/08/2026</td><td><span class="pill p-g">✓ Analysé</span></td><td>Chantier FSE IHE Claim · Coordination T2</td></tr>
+      <tr class="clickrow" onclick="showDoc('RAPPORT_MENSUEL')"><td><span class="pill p-gr">TIER 6</span></td><td class="bold">Rapport Mensuel Juillet 2026 · 78 projets BDI</td><td>Word</td><td class="mono">Juil. 2026</td><td><span class="pill p-g">✓ Analysé</span></td><td>Portefeuille · DCE DIM publié 16/07</td></tr>
+      <tr class="clickrow" onclick="showDoc('METHODE_MAILS')"><td><span class="pill p-gr">TIER 7</span></td><td class="bold">Méthode gestion mails DASS / MOHIM — workflow n8n</td><td>Google Doc</td><td class="mono">14/08/2026</td><td><span class="pill p-g">✓ Analysé</span></td><td>Opérationnel · Séparation DASS/MOHIM</td></tr>
+      <tr class="clickrow" onclick="showDoc('SINAPSE')"><td><span class="pill p-gr">TIER 7</span></td><td class="bold">Due Diligence SINAPSE · GIE SINAPSE (x2) · Modèle EVASAN</td><td>Word/PPT</td><td class="mono">—</td><td><span class="pill p-gr">Catalogués</span></td><td>Contexte marché · Référence secondaire</td></tr>
+      <tr class="clickrow" onclick="showDoc('BDI_PROCESSUS')"><td><span class="pill p-r">TIER 1</span></td><td class="bold">Processus et organisation de la donnée — BDI DASS NC</td><td>Doc</td><td class="mono">—</td><td><span class="pill p-g">✓ Analysé</span></td><td>NOUVEAU · Source directe note CI-SIS §3</td></tr>
+      <tr class="clickrow" onclick="showDoc('NOTE_CISIS')"><td><span class="pill p-r">TIER 1</span></td><td class="bold">Note méthodologique — Serveur d'identité RSNC (CI-SIS NC)</td><td>Word</td><td class="mono">26/08/2026</td><td><span class="pill p-a">v1.4 · À transmettre DINUM</span></td><td>Chaîne Gouv./DASS/DINUM · 4 volets</td></tr>
+      <tr class="clickrow" onclick="showDoc('PPT_CISIS')"><td><span class="pill p-r">TIER 1</span></td><td class="bold">Diaporama — Serveur d'identité des professionnels de santé</td><td>PPTX</td><td class="mono">28/08/2026</td><td><span class="pill p-g">✓ Produit</span></td><td>NOUVEAU · Miroir note v1.4 · 13 slides</td></tr>
+      <tr class="clickrow" onclick="showDoc('ORG_CELLULE')"><td><span class="pill p-r">TIER 1</span></td><td class="bold">Organisation Cible — Cellule e-Santé DASS NC (V5)</td><td>Word</td><td class="mono">28/08/2026</td><td><span class="pill p-g">✓ Analysé</span></td><td>NOUVEAU · Lié CHT-003/004 (trépied PMO)</td></tr>
+      <tr class="clickrow" onclick="showDoc('PPT_CISIS_V13OLD')"><td><span class="pill p-gr">TIER 3</span></td><td class="bold">Diaporama — Serveur d'identité RSNC (v1.3, antérieure)</td><td>PPTX</td><td class="mono">27/08/2026</td><td><span class="pill p-gr">Supplanté</span></td><td>⚠ Erreur FHIR non corrigée · doublon à nettoyer</td></tr>
+    </tbody></table>
+  </div></div>
+</div></div>
+
+<!-- MONITORING -->
+<div id="tab-monitoring" class="tab"><div class="bdy">
+  <div class="g2">
+    <div><div class="sec">Infrastructure PMO Intelligence</div>
+    <div class="card"><div class="cbdy">
+      <div class="kgrid">
+        <div class="ki"><div class="kl">Tables n8n</div><div class="kv" style="color:var(--green)">4</div><div class="ks">Contract · Roadmap · Deliverable · Backlog</div></div>
+        <div class="ki"><div class="kl">Total entrées</div><div class="kv" style="color:var(--blue)">115+</div><div class="ks">Baseline complète</div></div>
+        <div class="ki"><div class="kl">Corpus</div><div class="kv" style="color:var(--green)">30/30</div><div class="ks">CR DPASS 05/08 intégré</div></div>
+        <div class="ki"><div class="kl">Daily Run</div><div class="kv" style="color:var(--green)">✓</div><div class="ks">07:00 Pacific/Noumea</div></div>
+        <div class="ki"><div class="kl">Livrables Word</div><div class="kv" style="color:var(--green)">4</div><div class="ks">DEL-001 v1.4 · 002 · 003 · 004</div></div>
+        <div class="ki"><div class="kl">DEL-002</div><div class="kv" style="color:var(--green)">✓</div><div class="ks">v1.0 · 90%</div></div>
+      </div>
+      <div style="font-family:var(--mono);font-size:10px;line-height:1.9;color:var(--grey);background:#fafaf8;padding:10px;border:1px solid var(--bl);margin-top:12px">
+        <div>CADRE NORMATIF ........... HAS / ANS CI-SIS / IHE / HL7 FHIR R4</div>
+        <div>REF. PROGRAMMATIQUE ...... FDR eSanté v0.4 (référence de travail)</div>
+        <div>DEL-001 .................. ✓ v1.4 — 19 commentaires traités</div>
+        <div style="color:var(--green)">DEL-002 .................. ✓ v1.0</div>
+        <div>DEL-003 .................. ✓ v1.1</div>
+        <div>DEL-004 .................. ✓ v1.1</div>
+        <div id="jal001-monitoring"></div>
+        <div style="color:var(--green)">DOSSIER TUKUMULI ......... ✓ PRÊT</div>
+        <div style="color:var(--amber)">PHASE 1 DEADLINE ......... J-16 (06/09/2026)</div>
+        <div>CORPUS ................... 30/30 (CR DPASS 05/08 intégré)</div>
+      </div>
+    </div></div>
+    <div class="sec" style="margin-top:16px">Statuts centralisés (source unique)</div>
+    <div class="card"><div class="cbdy">
+      <p style="font-size:11px;color:var(--grey);margin-bottom:10px">Ces statuts sont définis une seule fois dans le code et alimentent automatiquement tous les endroits du cockpit où ils apparaissent (bandeau, tuiles, risques, backlog, timeline...). Modifier une valeur ici les met à jour partout.</p>
+      <table><thead><tr><th>Statut</th><th>Libellé</th><th>Détail actuel</th></tr></thead>
+      <tbody id="status-registry-body"></tbody>
+      </table>
+    </div></div></div>
+    <div><div class="sec">Phases d'implémentation — Jalons contractuels MIL-001 à MIL-007 (source DEL-003 v1.2)</div>
+    <div class="card"><div class="cbdy" id="milestones-body">
+      <div style="text-align:center;color:var(--grey);padding:20px">Chargement...</div>
+    </div></div></div>
+  </div>
+</div></div>
+
+
+<!-- MAILS -->
+<div id="tab-mails" class="tab"><div class="bdy">
+  <div class="sec">Boîte mail DASS — izhar.mahjoub.prestataire@gouv.nc · Sync toutes les heures · Cliquer pour ouvrir Gmail</div>
+  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+    <button onclick="filterMails('all')" id="fm-all" style="padding:4px 12px;font-size:11px;font-weight:700;border:1px solid var(--border);background:var(--nc);color:#fff;cursor:pointer">Tous</button>
+    <button onclick="filterMails('DASS')" id="fm-DASS" style="padding:4px 12px;font-size:11px;font-weight:700;border:1px solid var(--border);background:#fff;cursor:pointer">DASS</button>
+    <button onclick="filterMails('DINUM')" id="fm-DINUM" style="padding:4px 12px;font-size:11px;font-weight:700;border:1px solid var(--border);background:#fff;cursor:pointer">DINUM</button>
+    <button onclick="filterMails('CAFAT')" id="fm-CAFAT" style="padding:4px 12px;font-size:11px;font-weight:700;border:1px solid var(--border);background:#fff;cursor:pointer">CAFAT</button>
+    <button onclick="filterMails('CHT')" id="fm-CHT" style="padding:4px 12px;font-size:11px;font-weight:700;border:1px solid var(--border);background:#fff;cursor:pointer">CHT</button>
+    <button onclick="filterMails('EXTERNE')" id="fm-EXTERNE" style="padding:4px 12px;font-size:11px;font-weight:700;border:1px solid var(--border);background:#fff;cursor:pointer">Externe</button>
+    <span id="mail-count" style="margin-left:auto;font-size:11px;color:var(--grey);align-self:center"></span>
+  </div>
+  <div class="card"><div class="cbdy" style="padding:0">
+    <table id="mail-table"><thead><tr>
+      <th style="width:80px">Tag</th><th style="width:120px">Date</th><th style="width:200px">Expéditeur</th>
+      <th>Objet</th><th style="width:60px">PJ</th><th style="width:80px">Statut</th>
+    </tr></thead>
+    <tbody id="mail-tbody">
+      <tr><td colspan="6" class="loading" id="mail-empty-msg">⏳ En attente de la première synchronisation Gmail...</td></tr>
+    </tbody></table>
+  </div></div>
+</div></div>
+
+<!-- RÉUNIONS -->
+<div id="tab-reunions" class="tab"><div class="bdy">
+  <div class="sec">Calendrier DASS — gouv.nc · J-7 à J+14 · Sync toutes les heures</div>
+  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+    <button onclick="filterReunions('all')" style="padding:4px 12px;font-size:11px;font-weight:700;border:1px solid var(--border);background:var(--nc);color:#fff;cursor:pointer">Toutes</button>
+    <button onclick="filterReunions('à venir')" style="padding:4px 12px;font-size:11px;font-weight:700;border:1px solid var(--border);background:#fff;cursor:pointer">À venir</button>
+    <button onclick="filterReunions('passée')" style="padding:4px 12px;font-size:11px;font-weight:700;border:1px solid var(--border);background:#fff;cursor:pointer">Passées</button>
+    <button onclick="filterReunions('DINUM')" style="padding:4px 12px;font-size:11px;font-weight:700;border:1px solid var(--border);background:#fff;cursor:pointer">DINUM</button>
+    <button onclick="filterReunions('DASS')" style="padding:4px 12px;font-size:11px;font-weight:700;border:1px solid var(--border);background:#fff;cursor:pointer">DASS</button>
+    <span id="reun-count" style="margin-left:auto;font-size:11px;color:var(--grey);align-self:center"></span>
+  </div>
+  <div class="card"><div class="cbdy" style="padding:0">
+    <table id="reun-table"><thead><tr>
+      <th style="width:80px">Tag</th><th style="width:130px">Date</th><th>Titre</th>
+      <th style="width:80px">Statut</th><th style="width:60px">PV</th><th style="width:120px">Participants (résumé)</th>
+    </tr></thead>
+    <tbody id="reun-tbody">
+      <tr><td colspan="6" class="loading">⏳ Chargement des réunions depuis n8n...</td></tr>
+    </tbody></table>
+  </div></div>
+</div></div>
+
+<!-- RELATIONS -->
+<div id="tab-relations" class="tab"><div class="bdy">
+  <div class="sec">Suivi relations institutionnelles — DASS interne · DINUM · CAFAT · CHT · Provinces</div>
+  <div class="g2">
+    <div>
+      <div class="sec">Relations DASS interne</div>
+      <div id="rel-dass" class="loading">⏳ Chargement...</div>
+      <div class="sec" style="margin-top:12px">Relations DINUM</div>
+      <div id="rel-dinum" class="loading">⏳ Chargement...</div>
+    </div>
+    <div>
+      <div class="sec">Relations CAFAT</div>
+      <div id="rel-cafat" class="loading">⏳ Chargement...</div>
+      <div class="sec" style="margin-top:12px">Relations CHT / Provinces</div>
+      <div id="rel-autres" class="loading">⏳ Chargement...</div>
+    </div>
+  </div>
+</div></div>
+
+<!-- DÉCISIONS -->
+<div id="tab-decisions" class="tab"><div class="bdy">
+  <div style="margin-bottom:10px"><button onclick="editDecision('NEW')" style="background:var(--ink);color:#fff;border:none;padding:8px 16px;font-size:11px;font-weight:600;cursor:pointer">+ Nouvelle décision</button></div>
+  <div class="card"><div class="cbdy" style="padding:0">
+    <table><thead><tr><th>ID</th><th>Décision</th><th>Décideur</th><th>Statut</th><th>Source</th></tr></thead><tbody id="decisions-tbody">
+      <tr><td colspan="5" style="text-align:center;color:var(--grey);padding:20px">Chargement...</td></tr>
+    </tbody></table>
+  </div></div>
+</div></div>
+
+<!-- REPORTS -->
+<div id="tab-reports" class="tab"><div class="bdy">
+  <div style="font-size:11px;color:var(--grey);background:var(--surface);border:1px solid var(--border);padding:8px 12px;margin-bottom:14px">
+    Rapports générés automatiquement par le cockpit — hebdomadaire chaque vendredi 18h, mensuel le dernier jour du mois. Chaque rapport est un <b>instantané de l'état</b> des Actions, Risques, Décisions et de la Timeline au moment de la génération (les tables ne conservent pas d'historique de modification, donc aucun "delta" n'est calculé). Chaque rapport est aussi déposé dans le dossier Drive DASS PMO sous forme de fichier HTML mis en forme (le nœud Google Drive de n8n ne permet pas de générer un vrai Google Doc formaté à partir de HTML).
+  </div>
+  <div class="sec">Rapports hebdomadaires</div>
+  <div id="reports-weekly-list" style="margin-bottom:18px"></div>
+  <div class="sec">Rapports mensuels</div>
+  <div id="reports-monthly-list"></div>
+</div></div>
+
+<div class="ftr">
+  <div><strong>DASS eSanté PMO Cockpit v3.7</strong> — 26/08/2026 · Cadre normatif : HAS / ANS CI-SIS / IHE / HL7 FHIR R4 · FDR v0.4</div>
+  <div style="font-family:var(--mono)">J-16 Phase 1 · 4/4 livrables produits · 30/30 docs · <span id="jal001-footer"></span> · Daily Run 07:00</div>
+  <div><span style="color:var(--red);font-weight:700">⚠ CONFIDENTIEL</span> — Usage interne DASS / Izhar Mahjoub</div>
+</div>
+
+<script>
+const DOCS = {
+  DEMIHEURE_1:{title:'La 1/2 heure de la santé — Introduction à la Santé Numérique',sub:'PPTX · 21/07/2026 · Session inaugurale · Livrable',drive:'https://drive.google.com/file/d/1Ui4rrggymvIJYjzktBjXLl7OC2rapLx8/view',tags:[['Livrable','p-g'],['Session 1','p-b']],sections:[
+    {h:'Contenu',t:'Introduction à la santé numérique : enjeux de la santé (transition démographique, épidémiologique, déserts médicaux), importance d\'investir dans l\'e-santé, principaux défis sectoriels, exemples de programmes e-santé (SIS, SIH, télémédecine, m-Health, Big Data).'},
+    {h:'Positionnement',t:'Première session du cycle "1/2 heure de la santé" — pose les fondations conceptuelles avant les sessions techniques suivantes (identité, interopérabilité).'}]},
+  DEMIHEURE_2:{title:'La 1/2 heure de la santé — Gouvernance et Interopérabilité des Identités en Santé',sub:'PPTX · 26/08/2026 · RPPS, CI-SIS, FHIR · Livrable',drive:'https://drive.google.com/file/d/1Sq_bhFj6JNpkD5zp5Pi_OSPtuCdOHfoU/view',tags:[['Livrable','p-g'],['Session 2','p-b'],['NOUVEAU','p-r']],sections:[
+    {h:'Contenu',t:'Le défi de l\'identité en santé (enjeux cliniques, légaux, techniques) · Le référentiel français RPPS (unicité, légalité, exhaustivité, structure du numéro) · La bascule ADELI → RPPS+ · L\'interopérabilité via le CI-SIS (doctrine ANS, opposabilité).'},
+    {h:'Lien avec la mission',t:'Éclaire directement le point bloquant remonté en CODIR du 24/08 : le référentiel RSNC fonctionne mais sa couche API n\'est pas finalisée (développements stoppés, DINUM à solliciter).'}]},
+  DEMIHEURE_2_VIDEO:{title:'Enregistrement — Gouvernance et Interopérabilité des Identités en Santé',sub:'MP4 · 26/08/2026 · Session 2 · Enregistrement complet',drive:'https://drive.google.com/file/d/1jkbSd3ZxQMkthvlZ61_Mvv_uCmupAyKL/view',tags:[['Session 2','p-b'],['Vidéo','p-gr']],sections:[
+    {h:'Contenu',t:'Enregistrement vidéo complet de la session "1/2 heure de la santé" du 26/08/2026 sur la gouvernance et l\'interopérabilité des identités en santé.'}]},
+  DEMIHEURE_2_AUDIO:{title:'La face cachée du numéro RPPS',sub:'Audio (m4a) · 25/08/2026 · Approfondissement Session 2',drive:'https://drive.google.com/file/d/1MKgqoAZ1MAmHdPJNLuwdZ7JTMtMPznu_/view',tags:[['Session 2','p-b'],['Audio','p-gr']],sections:[
+    {h:'Contenu',t:'Enregistrement audio d\'approfondissement sur les aspects moins connus du numéro RPPS, en préparation ou en complément de la session du 26/08.'}]},
+  DEMIHEURE_2_MPI1:{title:'Digital Health Identity and MPI',sub:'PPTX · Ressource complémentaire · Session 2',drive:'https://drive.google.com/file/d/1Qpok-biEiqZdmcu40Op0nHvJoVq9WV2f/view',tags:[['Ressource','p-gr'],['Session 2','p-b']],sections:[
+    {h:'Contenu',t:'Formation de référence sur les fondations de l\'identité numérique en santé et le Master Patient Index (MPI) : architecture, interopérabilité (FHIR, IHE, HL7 v2), gouvernance. Support pédagogique pour décideurs et architectes.'}]},
+  DEMIHEURE_2_MPI2:{title:'MPI Digital Health Identity Foundations',sub:'PPTX · 15 modules · Ressource complémentaire · Session 2',drive:'https://drive.google.com/file/d/1uoFlfhDIkRZuq0duvwTpSXYf5LsDpO0k/view',tags:[['Ressource','p-gr'],['15 modules','p-b'],['Session 2','p-a']],sections:[
+    {h:'Contenu',t:'Formation approfondie en 15 modules : identité en santé, MPI/EMPI, cycle de vie, rapprochement de patients, golden record, architecture, interopérabilité, gouvernance, qualité des données, sécurité, stratégie de mise en œuvre.'}]},
+  CONTRAT:{title:'Contrat N°339C25',sub:'ACADYS France · PDF · 05/02/2026 · TIER 1',drive:'',tags:[['TIER 1','p-r'],['Référence absolue','p-b']],sections:[
+    {h:'Objet',t:'Mise à disposition d\'un Directeur de programme e-santé auprès de la DASS pour 12 mois. Démarrage 06/07/2026 · Fin 06/07/2027. Prix ferme ~200k€. Pénalités : 1%/jour HT, plafond 10%.'},
+    {h:'Jalons Phase 1',t:'M+2 = 06/09/2026 · 4 livrables (DEL-001 à DEL-004). M+4 = 06/11, M+7 = 06/02/27, M+8 = 06/03/27, M+10 = 06/05/27, M+11 = 06/06/27, M+12 = 06/07/27.'},
+    {h:'Gap critique',t:'GAP-001 : montant exact absent (section 4.2 vide). Annexe 1 (spécifications techniques) manquante — ACT-003 : à récupérer auprès DASS.'}]},
+  PPT_GOV:{title:'Presentation_Gouvernement_NC_eSante',sub:'PPT · 26 slides · 10/08/2026 · TIER 1 · Dossier TUKUMULI',drive:'https://drive.google.com/file/d/1cT52jslNx9dhV2jfN1k3zFU74WlTqnFd/view',tags:[['TIER 1','p-r'],['Dossier TUKUMULI','p-b'],['26 slides','p-gr']],sections:[
+    {h:'Contenu',t:'Vision 3 ans · Gouvernance COPIL · RACI · Budget indicatif · Plan RH · LP 2026-5 · ROI théorique 1,145 Mrd XPF/an · Benchmark Grèce · 10 risques · KPIs.'},
+    {h:'3 décisions sollicitées à TUKUMULI (slide 26)',t:'1. Adopter le cadre de gouvernance (Cellule E-Santé, RACI, COPIL, Kill Switch)\n2. Autoriser l\'étude de préfiguration médico-économique (3 mois)\n3. Valider la trajectoire budgétaire, RH et calendaire.'},
+    {h:'Chiffres clés',t:'135M XPF / 36 mois · ROI théorique 1,145 Mrd XPF/an · Benchmark Grèce (modèle adapté NC) · 4 trimestres Année 1 · 3 ans de trajectoire fondations → massification → rayonnement.'}]},
+  RAPPORT_ETONNEMENT:{title:'Rapport d\'étonnement stratégique',sub:'Word · 8-17 juillet 2026 · TIER 2 · Validé par DASS',drive:'https://docs.google.com/document/d/1dGubopTwxPIHAQf-fu4P5vxKVj-Omsaf8zk51bpis68',tags:[['TIER 2','p-a'],['6 piliers OMS','p-b'],['Diagnostic fondateur','p-g']],sections:[
+    {h:'Pilier 1 — Gouvernance',t:'Fonctionnement en mode push : opérateurs proposent des solutions avant formalisation des exigences métiers DASS. Enjeu : rééquilibrer en positionnant la DASS en amont.'},
+    {h:'Pilier 2 — Financement',t:'Angle mort pilotage médico-économique. Statistiques FSE prisonnières des logiciels privés. BigQuery instable. Enjeu : flux structurés compatibles HL7 FHIR R4.'},
+    {h:'Pilier 3 — SIS & Données',t:'Architecture BDI solide mais fragilisée (Sheets, FTP manuels, dépendance DINUM). Enjeu : autonomie BDI DASS, frontières applicatives avec DINUM.'},
+    {h:'Pilier 4 — Produits / Télémédecine',t:'Référentiels DASS non exposés en API. NABM-NC 1994, NGAP 2008 — obsolètes. RESEMS et IPS NC disponibles via RSNC, à exposer via API + guide d\'implémentation.'},
+    {h:'Pilier 5 — Services / Fracture',t:'Fracture géographique brousse/îles. Réseau insuffisant → EVASAN fragilisé. Mode dégradé à étudier (pas prescrit). DEC-004 : immersions terrain validées.'},
+    {h:'Pilier 6 — Personnels de santé',t:'Charge de codification (CIM-10, LOINC, SNOMED CT) sans allègement. Marche technologique éditeurs locaux. Plan accompagnement massif + appui HAS requis.'}]},
+  FDR_V04:{title:'Feuille de route Numérique en Santé NC v0.4',sub:'Word · 10/08/2026 · TIER 2 · Référence programmatique de travail',drive:'',tags:[['TIER 2','p-a'],['15 sections','p-b'],['Référence de travail','p-g']],sections:[
+    {h:'Structure (15 sections)',t:'S.1 Résumé exécutif · S.4 RACI étendu · S.7 Dépendances critiques + Gantt · S.9 Cadre juridique LP 2026-5 · S.11 Timeline T1-T4 (cible vs réaliste) · S.12 Matrice risques · S.14 Étude médico-économique.'},
+    {h:'Budget et chantiers Année 1',t:'135 M XPF / 36 mois. Chantiers prioritaires : gouvernance + Cellule e-Santé · Référentiels FHIR R4 (ANS CI-SIS) · Pilote résumé patient IHE IPS (EVASAN) · FSE structurée IHE Claim (CAFAT) · Index patient IHE PIXm/PDQm.'},
+    {h:'Note importante',t:'Référence programmatique de travail à la date de la présente note (DEL-001 v1.4), sous réserve des arbitrages relevant du Gouvernement NC (présentation TUKUMULI en planification). Les versions v0.2, v0.3, v0.5, v0.6 sont des brouillons historiques à ignorer.'}]},
+  PLAN_DIRECTEUR:{title:'Plan Directeur et Opérationnel e-Santé DASS-NC',sub:'Word · TIER 2 · Budget 135M XPF / 36 mois',drive:'',tags:[['TIER 2','p-a'],['135M XPF','p-b'],['RACI','p-gr']],sections:[
+    {h:'Budget',t:'135 M XPF / 36 mois. Module 1 : 15M · Module 2 : 50M · Module 3 : 40M · Module 4 : 30M XPF.'},
+    {h:'RACI',t:'DASS = MOA stratégique (pilote central, régulation). DINUM = infrastructure Cloud gouvernemental. ASS-NC = Observatoire de santé.'},
+    {h:'Architecture HDS',t:'Azure France Centrale · AES-256 · HSM BYOK DASS · Profils IHE ATNA (audit) · RTO < 4h · Conformité LP 2026-5.'}]},
+  LETTRE_DASS:{title:'Réponse DASS N°2026-DASS-405964',sub:'PDF · 24/07/2026 · TIER 3 · SIGNÉE Marie-Laure MESTRE',drive:'https://drive.google.com/file/d/1ET5K1NvXMCpyFypAdHj3mqrtAjF-kUaD',tags:[['TIER 3','p-b'],['Décision officielle','p-r'],['SIGNÉE MESTRE','p-g']],sections:[
+    {h:'Validation du diagnostic',t:'« La pertinence de votre diagnostic systémique » validée. « Le numérique doit devenir pour nous un véritable levier de pilotage médico-économique. »'},
+    {h:'Réserve sur la stratégie territoriale',t:'« Il appartient au futur gouvernement de la Nouvelle-Calédonie de valider la stratégie territoriale. » → Présentée à TUKUMULI (DEC-008 en planification).'},
+    {h:'4 arbitrages confirmés DASS',t:'DEC-001 : DASS = pilote central · DEC-002 : HSA OMS comme préalable (en attente Gov.) · DEC-003 : flux médico-économiques structurés HL7 FHIR R4 après validation architecture cible · DEC-004 : immersions terrain.'}]},
+  CTGISN:{title:'CTGISN — Cycle Territorial Gouvernance Santé Numérique',sub:'Word · TIER 3 · Analysé',drive:'',tags:[['TIER 3','p-b'],['Gouvernance','p-gr'],['Cycle décisionnel','p-a']],sections:[
+    {h:'Objet',t:'Définit le cycle décisionnel territorial pour la gouvernance de la santé numérique en NC. Articulation entre instances politiques (Gouvernement, DASS), techniques (opérateurs) et métiers (professionnels).'},
+    {h:'Pertinence',t:'Base pour la structuration du COPIL Écosystème (ACT-012). Référence pour le cycle de validation des standards IHE/HL7 par la DASS. Utile pour DEL-002 et DEL-006.'}]},
+  ECOSYSTEME:{title:'Ecosystème e-Santé NC',sub:'Google Doc · 20/07/2026 · TIER 4 · 35 fonctions analysées',drive:'https://docs.google.com/document/d/137GnQPCw68swEPs4oUIqdbJ2h3hbIKyM5XVkfuqCu1w',tags:[['TIER 4','p-gr'],['35 fonctions','p-b'],['Base DEL-002','p-a']],sections:[
+    {h:'Structure',t:'35 fonctions comparées Métropole ↔ NC avec statut de couverture : 🟢 Assuré · 🟡 Partiel · 🔴 Absent. 5 axes RACI : Gouvernance · Architecture/Interop. · Identitovigilance · Services/Sécurité · Données/IA.'},
+    {h:'Constats clés',t:'14 fonctions 🔴 (non couvertes) : Doctrine technique santé · Gouvernance interopérabilité · Standards HL7/FHIR · Profils IHE · Guides d\'implémentation FHIR · Tests de conformité · Certification logiciels · Terminologies médicales · Portail patient · Gestion consentement · IA en santé · Catalogue API · Catalogue services · Sandbox.'},
+    {h:'Fonctions assurées',t:'DINUM NC (stratégie numérique, infra, cloud) · DASS (politique santé, régulation offre soins) · RSNC = référentiel professionnels de santé (équivalent RPPS) + RESEMS (équivalent FINESS) · Protection données (autorités compétentes NC).'},
+    {h:'Usage DEL-002',t:'Document source primaire pour la cartographie des projets et acteurs. Croiser avec matrice RACI, liste acteurs NC et CR terrain.'}]},
+  MATRICE_RACI:{title:'Matrice RACI e-Santé NC',sub:'Google Sheet · 03/08/2026 · TIER 4 · 5 domaines',drive:'https://docs.google.com/spreadsheets/d/1Ft0tDMXYr8_GRR7Y_8aUZ3n-oNeUcTw-Vl8IC1ZGxUs',tags:[['TIER 4','p-gr'],['5 domaines RACI','p-b'],['Base §5.4','p-a']],sections:[
+    {h:'Structure (5 domaines)',t:'1. Gouvernance & Stratégie générale\n2. Architecture technique & Interopérabilité\n3. Identitovigilance & Référentiels\n4. Services applicatifs & Sécurité\n5. Données, Recherche, IA, Compétences'},
+    {h:'Acteurs couverts',t:'Gouv NC/DASS (A) · DINUM NC · CAFAT · Cellule e-Santé / Opérateur PMO (R) · Établissements & Professionnels · UNC/IFPSS/Observatoire.'},
+    {h:'Points clés',t:'DASS = Approbateur (A) sur toutes les fonctions stratégiques. Cellule e-Santé = Réalisateur (R) sur gouvernance interop., standards, CTI, guides FHIR. CAFAT = A/R sur prescription électronique. DINUM = R sur infrastructure et cybersécurité.'}]},
+  CR_DPASS:{title:'CR Réunion DPASS Province Sud — 05/08/2026',sub:'Word · TIER 3 · NOUVEAU · Participants : FRIAT, MEDEVIELLE, STROUSE, MAHJOUB, YOTEAU',drive:'https://drive.google.com/file/d/1jTVmfPQUSdCZUwbIgZcBHYg0l3U0NvSQ/view',tags:[['TIER 3','p-b'],['Terrain Province Sud','p-a'],['NOUVEAU','p-r']],sections:[
+    {h:'Contexte Province Sud',t:'DPASS gère 56 000 consultations/an · 5 CMS en brousse (Bourail, La Foa, Thio, Île-des-Pins) · 350 000 feuilles de soins/an avant émeutes (230 000 aujourd\'hui) · Délai paiement praticiens : 45j (vs 30j CAFAT).'},
+    {h:'GIP SI2S — état réel',t:'CAFAT n\'a pas intégré le GIP SI2S pour des raisons de gouvernance. Les mutuelles et provinces y sont entrées. Interface mandaté pour la télétransmission FSE. Asclepios = 70% médecins libéraux. Risque : dépendance éditeur unique (Interface gère Asclepios + MDS).'},
+    {h:'Gouvernance HIE — question ouverte',t:'Aucune architecture du réseau d\'échange de données de santé (HIE) proposée. La DINUM attend les propositions d\'Izhar. Identifiant patient unique non défini. Gouvernance des référentiels (identité, droits, professionnels) non résolue.'},
+    {h:'Lacunes opérationnelles terrain',t:'Absence messagerie sécurisée (discussions depuis 10 ans sans issue) · Pas de cadre conventionnel CMS ↔ CHT · Bulletins hospitalisation rarement transmis aux CMS · Double saisie Asclepios/Weego non résolue · Mission carte sanitaire EY : aucun retour DPASS.'},
+    {h:'Actions décidées',t:'ACT-017 : Visites CMS brousse par Izhar (Bourail, La Foa, Thio, Île-des-Pins)\nACT-016 : Développement API gouvernementale normalisée (DINUM) pour remontée données\nContacte HAS internationale (modèle accr. insulaire, testé Gabon juin 2026)\nProposition groupe de travail ~20 experts pour CTI (3 mois)'},
+    {h:'Citation clé Izhar',t:'« Le problème, il est dans la gouvernance. Il n\'est pas dans la technique. »'}]},
+  ARCHI_DASS:{title:'Architecture Cible SI DASS-NC — réponse au diagnostic Kortex/DINUM',sub:'PPTX · 12/08/2026 · TIER 2 · Analysé le 26/08/2026',drive:'https://drive.google.com/file/d/1Xrh4d_OcXbULQ7VNgI3rs3cPVu7NC6He/edit',tags:[['TIER 2','p-b'],['Corrigé','p-g'],['ERP + interop','p-gr']],sections:[
+    {h:'Contenu réel',t:"Réponse de la Cellule e-Santé DASS au diagnostic Kortex Conseil restitué à la DINUM le 12/08/2026 (79 outils recensés, 23 flux de données, 7 flux sur ressaisie manuelle). Propose une cible en deux branches : côté administratif, un ERP unique (Odoo pressenti) qui absorbe 16 outils Sheets/Glide fragmentés en 3 modules ; côté santé, une couche d'interopérabilité entre ASCLEPIOS/DXCare, sans connexion directe entre systèmes médicaux."},
+    {h:'Principe directeur cité',t:"« Aucune des deux branches ne duplique les référentiels DINUM. Elles les consomment par API, jamais par copie locale. » Un comité DINUM/DASS porterait la propriété et le versionnage des référentiels — ce principe évite explicitement de recréer un doublon comme celui déjà observé entre RESEM et RSNC."},
+    {h:'Lien avec la mission',t:"Corrobore directement la recommandation de la note CI-SIS (façade FHIR mCSD plutôt que duplication) et le principe des vues BigQuery du document BDI. Point de vigilance identifié dans le PPT lui-même : l'arbitrage sur le maintien ou la sortie de Google Workspace reste ouvert."}]},
+  RSN:{title:'Rapport Stratégique de Modernisation — Vers un RSN Ouvert et Interopérable',sub:'Google Doc · 22/07/2026 · TIER 1 · Analysé le 26/08/2026',drive:'https://docs.google.com/document/d/1ewQY7_MqlXuqtwc4LXH6HktXMWnry2-XNk0-HzMnUa8/edit',tags:[['TIER 1','p-r'],['Corrigé','p-g'],['Cite CI-SIS NC','p-r']],sections:[
+    {h:'Contenu réel',t:"Diagnostic : les acteurs techniques (GIP SI2S, DINUM) opèrent en mode « Push » — ils conçoivent des solutions de bout en bout avant validation DASS — inversant le pilotage régalien attendu. Propose un changement de paradigme : passer de logiciels qui dupliquent leurs propres référentiels à des « services socles » consommés par API (analogie : le RSN est le réseau routier, les logiciels sont les véhicules)."},
+    {h:'Standards cités',t:"Architecture cible sur 4 standards : HL7 FHIR R4 (pivot d'échange), OpenEHR (modélisation clinique par archétypes), OMOP/OHDSI (recherche clinique), ISO 13606 (continuité sémantique EHR). Brique 5 = moteur d'intégration qui transcode HL7v2/CDA R2 vers FHIR R4 via LOINC/SNOMED CT."},
+    {h:'Découverte majeure',t:"Ce document mentionne déjà explicitement un « Cadre d'Interopérabilité calédonien (CI-SIS NC) » imposé par arrêté territorial, et décrit le MPI (Brique 4) avec un algorithme Jaro-Winkler paramétré pour les patronymes coutumiers NC — antérieur à la note méthodologique produite le 26/08. À rapprocher directement de la note CI-SIS/RSNC : ce rapport constitue un précédent conceptuel qui aurait dû être cité en source."}]},
+  EDCH_FHIR:{title:'Analyse du processus EDCH et méthodologie de transition vers FHIR / One Health',sub:'Google Doc · 27/07/2026 · TIER 5 · Analysé le 26/08/2026',drive:'https://docs.google.com/document/d/1VRJLqdl6sNCiAuN-greNkRuSFMfD9cL3JDwBtt1i5a8/edit',tags:[['TIER 5','p-gr'],['Corrigé','p-g'],['Hors RSNC','p-gr']],sections:[
+    {h:'Contenu réel',t:"Concerne les Eaux Destinées à la Consommation Humaine (EDCH), pas les professionnels de santé. Diagnostic de l'existant (JotForm → Drive → Apps Script → BigQuery, +200 000 lignes) et méthodologie de migration en 4 chantiers vers FHIR : alignement terminologique SANDRE dans Ontoserver, mapping vers les ressources FHIR Location et Observation, pipeline BigQuery → serveur HAPI FHIR."},
+    {h:'Pertinence pour la mission',t:"Hors périmètre RSNC/identité, mais démontre une méthodologie de migration FHIR déjà éprouvée sur un autre domaine (environnement/santé publique) — transposable comme modèle de démarche pour d'autres chantiers d'interopérabilité, dont potentiellement le RSNC."}]},
+  MATURITE:{title:'Étude territoriale de maturité de la santé numérique NC',sub:'Google Doc · 08/07/2026 · TIER 4 · ⚠ Correction de statut',drive:'https://docs.google.com/document/d/17OXbqAtU4PqVMh4QQJMq_iik2UOdqONx9XTI0aOevgE/edit',tags:[['TIER 4','p-a'],['Projet, pas résultat','p-r'],['Corrigé','p-g']],sections:[
+    {h:'⚠ Correction importante',t:"Ce document n'est PAS une étude déjà réalisée avec un score de maturité — c'est le cadrage méthodologique d'une étude à mener (objectifs, périmètre, méthodologie d'entretiens, livrables attendus). Le tag précédent « Score maturité HIMSS » et le statut « Benchmarking » étaient incorrects : aucun référentiel HIMSS n'est cité dans le document, aucun score n'existe à ce jour."},
+    {h:'Contenu réel',t:"Première étape de l'élaboration du « Livre blanc de la Gouvernance de la Santé Numérique NC », rattachée à la dynamique « Galliéni de la santé ». Périmètre : DASS, DINUM, CAFAT, GIP SI2S, Provinces, établissements, professionnels libéraux, usagers, formateurs, éditeurs. Méthodologie : entretiens structurés sur 10 dimensions (gouvernance, SI, qualité, interopérabilité, données, cybersécurité, compétences, innovation, IA, priorités)."},
+    {h:'À faire',t:"Statut réel du projet (lancé ? en attente ?) à vérifier auprès de la DASS. Si l'étude est encore à mener, elle pourrait être une source précieuse pour objectiver le diagnostic déjà posé dans le rapport d'étonnement — mais ne peut pas être citée comme preuve chiffrée existante."}]},
+  LISTE_ACTEURS:{title:'Liste des acteurs eSanté NC',sub:'Excel · 19/08/2026 · TIER 4 · ⚠ Doublon identifié',drive:'https://drive.google.com/file/d/1Rzu3Fm-5YbbAxDEIyb4_OHhUiTGKdsJA/edit',tags:[['TIER 4','p-gr'],['Doublon ECOSYSTEME','p-r'],['Corrigé','p-g']],sections:[
+    {h:'⚠ Correction importante',t:"Ce fichier Excel n'est PAS une liste de contacts d'acteurs distincte — c'est exactement le même tableau des 37 fonctions Métropole/NC déjà catalogué sous ECOSYSTEME (Google Doc), probablement le fichier source utilisé pour construire ce dernier. Le tag précédent « Base DEL-002 · RACI détaillé » était trompeur : ce n'est pas un annuaire de contacts, il n'y a pas de RACI dans ce fichier."},
+    {h:'Recommandation',t:"Ne pas traiter comme une source indépendante dans les futurs livrables — déjà pleinement exploité via ECOSYSTEME dans DEL-002 §2. Si un véritable annuaire de contacts (noms, emails, téléphones par acteur) existe ailleurs, il reste à identifier séparément."}]},
+  FDR_V02:{title:'FDR v0.2 — Brouillon historique',sub:'Google Doc · 06/08/2026 · EXCLUS',drive:'https://docs.google.com/document/d/1-59VgHO0qeYOhlKQtNGR361gKQcVsfM7pAcc2dQd6Kk',tags:[['EXCLUS','p-gr'],['Brouillon','p-gr']],sections:[
+    {h:'Statut',t:'Brouillon historique à ignorer. La FDR v0.4 (10/08/2026) est la seule référence programmatique de travail. Les versions v0.2, v0.3, v0.5, v0.6 sont toutes des brouillons antérieurs.'}]},
+  CR_CAFAT:{title:'CR Réunion CAFAT 13/08/2026',sub:'Word · TIER 6 · Analysé',drive:'https://drive.google.com/file/d/1vDtkJtB2EA2qAgQaxhKuz51y5RkzEJY8/edit',tags:[['TIER 6','p-gr'],['CAFAT','p-b'],['SI 5 ans','p-a']],sections:[
+    {h:'Points clés',t:'Programme modernisation SI CAFAT : 5 ans, ~5 Mds XPF. Priorité CAFAT : supprimer le vendor lock-out. Aucun détail technique du programme SI partagé.'},
+    {h:'Convergence',t:'CAFAT suit les orientations DASS pour les standards d\'échange. Chantier FSE structurée (IHE Claim FHIR R4) dans la trajectoire commune. Délibération Congrès NC (Lp. 68-1-1) = prérequis juridique (RISK-FDR-007).'},
+    {h:'Note CAFAT / GIP SI2S',t:'Cohérent avec CR DPASS (05/08) : CAFAT n\'a pas intégré le GIP SI2S pour des raisons de gouvernance. Les mutuelles et provinces y sont entrées.'}]},
+  RAPPORT_MENSUEL:{title:'Rapport Mensuel — Juillet 2026',sub:'Word · TIER 6 · Analysé',drive:'',tags:[['TIER 6','p-gr'],['78 projets BDI','p-b']],sections:[
+    {h:'Portefeuille BDI',t:'78 projets SI recensés : 22 planifiés (2025+), 17 en cours de développement, 14 en maintenance.'},
+    {h:'DCE AMO DIM',t:'Dossier de Consultation des Entreprises pour l\'AMO DIM publié le 16/07/2026. Statut attribution (Jalon 05/08) inconnu — ACT-004.'}]},
+  METHODE_MAILS:{title:'Méthode gestion mails DASS / MOHIM',sub:'Google Doc · 14/08/2026 · TIER 7 · Workflow n8n',drive:'https://docs.google.com/document/d/1s4YuX1FQH0GpgONHgStcZH8vfLl45iys-yDGeA9N9gE',tags:[['TIER 7','p-gr'],['Opérationnel','p-b']],sections:[
+    {h:'Objet',t:'Méthode de tri et gestion des e-mails séparant la mission DASS (gouv.nc, DINUM, RSNC) et la mission MOHIM (CIeS, Sequoia, MSPS Maroc) via workflow n8n.'},
+    {h:'Architecture',t:'4 étapes : tri automatique par domaine/mots-clés → statut de suivi → génération brouillons Gmail → archivage + rapport d\'activité bicolonne (DASS / MOHIM).'}]},
+  BDI_PROCESSUS:{title:'Processus et organisation de la donnée — BDI DASS NC',sub:'Google Doc · TIER 1 · Analysé le 26/08/2026',drive:'https://docs.google.com/document/d/1JMU_Ydd2qUxJR7vk81UrsvuetEpc3ejJKNfmF2jW_b8/edit',tags:[['TIER 1','p-r'],['NOUVEAU','p-r'],['Source note CI-SIS','p-g']],sections:[
+    {h:'Objet',t:"Document de cadrage opérationnel du Bureau des Données et de l'Innovation (BDI). Objectifs affichés : organiser, structurer, centraliser la donnée DASS ; catalogue de données et point unique d'accès ; faciliter les échanges ; réduire les traitements manuels — exactement les objectifs cités en §3 de la note méthodologique CI-SIS/RSNC."},
+    {h:'Gouvernance des données (correspondant métier)',t:"Pour chaque jeu de données, un correspondant métier est désigné : il valide la cohérence globale, réagit aux anomalies, suit les indicateurs clés, travaille avec les équipes techniques. Principe affiché : « Aucune production statistique ne doit être effectuée sans un contrôle métier préalable. » Les contrôles automatiques existent mais ne remplacent pas l'expertise métier — cohérent avec le schéma en 6 étapes proposé dans la note (source autoritative → BDI → validation métier → RSNC)."},
+    {h:'Point technique clé — architecture en vues',t:"La DASS applique déjà, sur BigQuery, le principe : les tables sources ne sont JAMAIS exposées directement aux utilisateurs — chaque dataset fonctionnel a une version dédiée à la consultation, préfixée « vues_ », qui filtre/transforme/anonymise selon les besoins métier. C'est le même principe que la façade FHIR mCSD recommandée pour le RSNC (§6 de la note) : ne jamais exposer le schéma interne brut, toujours passer par une couche d'exposition contrôlée."},
+    {h:'Processus de partage de données',t:"Circuit formalisé pour la collecte/l'envoi de données à des partenaires : sollicitation du BDI, formalisation de la demande, convention si nécessaire (avec volet RGPD explicite pour les données nominatives — base légale, mesures de sécurité, droits des personnes, AIPD si besoin), circuit de signature (Vanessa → numéro CICA → direction → partenaire → contrôle de légalité)."},
+    {h:'Outillage et suivi',t:"Gestion des demandes via une application Glide (équivalent JIRA, faute d'accès DINUM à un vrai JIRA) avec tableau de bord Looker Studio. Catalogue de données en cours de construction (prototype Glide). Monitoring quotidien des requêtes BigQuery programmées, des cloud functions et de la réception des données partenaires (CHT, CAFAT, cliniques, DRHFPNC, CHN...)."},
+    {h:'Lien avec la mission',t:"Ce document confirme que la recommandation de la note CI-SIS (s'appuyer sur le BDI plutôt que créer une gouvernance parallèle) est cohérente avec des pratiques déjà en place et documentées, pas une simple hypothèse. Le principe des vues BigQuery est un précédent concret et directement transposable à la conception de la façade FHIR mCSD du RSNC."}]},
+  SINAPSE:{title:'Due Diligence SINAPSE · GIE SINAPSE · Modèle EVASAN',sub:'Word/PPT · TIER 7 · Catalogués',drive:'',tags:[['TIER 7','p-gr'],['Contexte marché','p-gr']],sections:[
+    {h:'Contenu',t:'Due Diligence Onepoint sur SINAPSE/CAFAT. Analyses internes GIE SINAPSE. Modèle ou gabarit EVASAN.'},
+    {h:'Positionnement',t:'Documents de contexte marché. Pas de valeur normative ou prescriptive. Utile comme contexte historique pour comprendre l\'écosystème des opérateurs. Modèle EVASAN → référence métier lors de la conception du pilote IHE IPS en T2.'}]},
+  NOTE_CISIS:{title:"Note méthodologique — Serveur d'identité RSNC (CI-SIS NC)",sub:'Word · v1.4 · 26/08/2026 · TIER 1 · Destinée à la DINUM',drive:'https://drive.google.com/file/d/1kP3yu_4aFfO5tq8DfZEeexI250tVIh0_/edit',tags:[['v1.4','p-r'],['À transmettre DINUM','p-a'],['Sourcé ANS','p-g']],sections:[
+    {h:'Objet',t:"Note méthodologique proposant une trajectoire en deux temps à la DINUM : cadrer d'abord la doctrine territoriale d'interopérabilité (CI-SIS NC), avant d'engager les spécifications, la conception et le développement du serveur d'identité des professionnels de santé du RSNC. Périmètre immédiat : IPS, RESEMS, situations d'exercice — le NCS reste un chantier distinct."},
+    {h:'Origine',t:"Répond au point remonté en CODIR DASS du 24/08/2026 : le RSNC est opérationnel sur son socle référentiel, mais sa couche d'exposition n'est pas finalisée. S'appuie sur la présentation « Gouvernance et Interopérabilité des Identités en Santé » du 26/08/2026 et sur le document DINUM « Numéro Calédonien de Santé » (juillet 2026)."},
+    {h:'Évolutions v1.3 → v1.4',t:"v1.3 : correction de la correspondance FHIR (PractitionerRole pour la relation IPS↔RESEMS, jamais NCS=Location), ajout Étape 0 qualification, façade FHIR nuancée. v1.4 : diagnostic reformulé en chaîne de dépendances Gouvernement→DASS→DINUM (fin du cadrage « blocage DINUM »), structuration en 4 volets du CI-SIS NC, nouvelle section Articulation avec le NCS, nouvelles sections « Ce qui relève de la DASS » et « Arbitrages Gouvernementaux »."},
+    {h:'Contenu',t:"Diagnostic de l'architecture RSNC actuelle vs standard IHE mCSD · §3.1 : le « volet identité » du CI-SIS repose en réalité sur 3 annexes ANS précises (Sources des données personnes et structures, Guide de gestion des OID, Prise en charge de l'INS) plutôt qu'un volet unique · Recommandation du profil FHIR mCSD plutôt que HPD · Méthode en 4 étapes · 4 demandes concrètes à la DINUM."},
+    {h:'Mise à jour v1.1 (26/08)',t:"Argumentaire renforcé et corrigé à partir de l'espace de publication officiel du CI-SIS (esante.gouv.fr) : citations précises des 3 annexes ANS avec versions et dates de validation."},
+    {h:'Mise à jour v1.2 (26/08)',t:"Ajout de la section 3 « Gouvernance de la donnée : s'appuyer sur le BDI » — s'appuie sur l'organisation Data existante à la DASS plutôt que de créer une gouvernance parallèle. Trois dimensions du professionnel de santé (Identité/Connaissances/Lieu d'exercice), chaîne de gouvernance en 6 étapes, répartition des responsabilités (autorités/BDI/RSNC/DINUM), principe directeur. Numérotation des sections suivantes recalée en conséquence (4 à 9)."},
+    {h:'À faire',t:'Présentation à Marie-Laure MESTRE pour validation, puis transmission à la DINUM.'}]},
+  PPT_CISIS:{title:"Diaporama — Vers un serveur d'identité des professionnels de santé",sub:'PPTX · 13 slides · 28/08/2026 · TIER 1 · Support de présentation DINUM',drive:'https://drive.google.com/file/d/1pQKKRrQepO3p66tsK36EVX0S2lNNNwyp/edit',tags:[['NOUVEAU','p-r'],['Miroir note v1.4','p-a'],['13 slides','p-gr']],sections:[
+    {h:'Objet',t:"Version diaporama de la note méthodologique CI-SIS NC/RSNC (v1.4), destinée à un support de présentation oral à la DINUM et/ou MESTRE. Structure en miroir exact des sections de la note."},
+    {h:'Enrichissement',t:"Construit à partir d'un document de référence uploadé (« Unified New Caledonia Health Architecture », 14 slides, axé NCS) : diagrammes repris et adaptés (silos bloqués, cercle de gouvernance BDI, pile CI-SIS NC, façade FHIR, feuille de route). Le volet NCS est traité en synthèse courte (slide 10 uniquement), conformément à son statut de chantier distinct dans la note."},
+    {h:'Correction appliquée',t:"Le document source associait IPS/RESEMS/NCS à « Practitioner, Organization, Location » de façon globale — erreur déjà corrigée dans la note v1.3. La diapo 8 du diaporama applique la correspondance corrigée : IPS→Practitioner, RESEMS→Organization, relation IPS↔RESEMS→PractitionerRole, NCS explicitement écarté de Location."},
+    {h:'Contenu (13 slides)',t:"1. Titre · 2. Contexte et périmètre · 3. Diagnostic (3 référentiels cloisonnés) · 4. Gouvernance BDI · 5. Répartition des responsabilités · 6-7. CI-SIS NC et ses 4 volets · 8. Pourquoi mCSD (corrigé) · 9. Feuille de route en 7 étapes · 10. Articulation avec le NCS · 11. Demandes DINUM · 12. DASS et Gouvernement · 13. Synthèse."},
+    {h:'Contrôles',t:'Validation structurelle PPTX passée, aucun texte de substitution résiduel, QA visuelle des 13 diapositives sans chevauchement ni débordement.'}]},
+  ORG_CELLULE:{title:'Organisation Cible — Cellule e-Santé DASS NC (V5)',sub:'Word · v5 · TIER 1 · Proposition RH/PMO',drive:'https://drive.google.com/file/d/1ghTGZqqtMXccHa1-6GEBRIV7GUsb_xGb/edit',tags:[['NOUVEAU','p-r'],['TIER 1','p-r'],['Lié CHT-003/004','p-a']],sections:[
+    {h:'Objet',t:"Proposition de réorganisation stratégique de la Cellule e-Santé en structure de type PMO (Project Management Office), intégrant précocement compétences médicales, expertise donnée et engagement citoyen."},
+    {h:'Trépied décisionnel',t:"Directeur e-Santé / Chef de PMO (1 ETP) — pilotage stratégique et institutionnel. CMIO, Chief Medical Information Officer (0,5 ETP, médecin, temps partagé avec activité clinique) — interface métier clinique. CMDO, Chief Medical Data Officer (0,5 ETP, médecin, anticipé dès T1) — gouvernance données, lien fonctionnel avec le BDI."},
+    {h:'Pôle Engagement, Usages et Citoyenneté',t:"Chargé(e) de Communication Citoyenne & Confiance (0,5 ETP, anticipé T1) — doctrine de consentement (opt-out). Chargé(e) de Conduite du Changement & Formation (1 ETP) — plans de formation, cellule Hypercare au lancement."},
+    {h:'Pôle Opérationnel, Interopérabilité et Data',t:"Chef(fe) de Projet Interopérabilité (1 ETP) — pilote le Cadre Territorial d'Interopérabilité (FHIR) et le pilote IPS. Ingénieur(e) Data (1 ETP, dès T1, rattachement hiérarchique BDI + fonctionnel CMDO) — flux d'ingestion, qualité, BI. Architecte SI (1-2 ETP, anticipé T2) — conformité technique DINUM, Go-Live."},
+    {h:'Phasage RH Année 1',t:"T1 (mois 1-3) : noyau stratégique complet (Directeur, CMIO, CMDO, Data Engineer, Chef Projet Interop, Communication citoyenne). T2 (mois 4-6) : Conduite du changement + 2ᵉ ressource technique — sécurisation Go-Live IPS/EVASAN. T3-T4 (mois 7-12) : consolidation, ouverture Portail Patient."},
+    {h:'Point de vigilance souligné par le document',t:"Le rattachement de l'Ingénieur Data reste hiérarchiquement au BDI (fonctionnel seulement au CMDO) — préserve explicitement les prérogatives existantes du BDI, facilite la validation DRHFPNC. Calibrage à 0,5 ETP des profils médicaux (CMIO/CMDO) pensé pour s'adapter à la tension du recrutement médical local."},
+    {h:'Lien avec la mission',t:"Document directement lié aux chantiers CHT-003 (Cellule e-Santé + CTI) et CHT-004 (Recrutement) de la Timeline — apporte le détail RH précis qui manquait à ces deux chantiers, désormais mis à jour en conséquence. Chantier bloqué comme CHT-003/004 par JAL-001 (retour TUKUMULI 11/09)."}]},
+  PPT_CISIS_V13OLD:{title:"Diaporama — Serveur d'identité RSNC (version v1.3, antérieure)",sub:'PPTX · 20 slides · 27/08/2026 · TIER 3 · Supplanté par la version 28/08 (v1.4)',drive:'https://drive.google.com/file/d/1okhY69DMMUAbxiEu95_dhOfjjesz9A1F/edit',tags:[['SUPPLANTÉ','p-gr'],['20 slides','p-gr'],['⚠ Contient erreur FHIR corrigée depuis','p-r']],sections:[
+    {h:'⚠ Statut',t:"Version antérieure (27/08, alignée sur la note v1.3) du diaporama présenté aujourd'hui sous PPT_CISIS (13 slides, 28/08, aligné v1.4). Contient encore la correspondance FHIR non corrigée (IPS/RESEMS/NCS → Practitioner/Organization/Location globalement) et l'affirmation catégorique « mCSD requis pour tout projet Ségur », deux points corrigés depuis dans la note v1.3→v1.4. À ne plus utiliser comme support de présentation."},
+    {h:'Contenu à ne pas perdre',t:"La diapo 10 « Éclairage — le chantier NCS / registre de la population » contient un niveau de détail sur le chantier NCS non repris ailleurs : 3 sources d'identité à fiabiliser (état civil droit commun/DAJ, coutumier/DGRAC, arrivées/DINUM), statuts de qualification (provisoire → vérifié → qualifié, modèle NIA français), traits stricts (nom/prénom naissance, sexe, date/lieu naissance), gouvernance du registre à trancher (responsable de traitement GNC)."},
+    {h:'Doublon détecté',t:"Un second exemplaire identique (fileId 1qLGIgMgMV_xFjkKpbM9jcOx1H3I-wO6L, 101 Ko contre 417 Ko pour celui-ci) existe dans le même dossier Drive — probablement une génération incomplète. À supprimer manuellement, non traité automatiquement (permissions insuffisantes)."},
+    {h:'Recommandation',t:"Conserver comme archive/référence pour le contenu NCS détaillé ci-dessus, mais utiliser exclusivement PPT_CISIS (13 slides) comme support de présentation à jour."}]}
+};
+
+const DELIVERABLES = {};
+
+
+function openPanel(title, sub, bodyHTML, ftrHTML) {
+  document.getElementById('panel-title').textContent = title;
+  document.getElementById('panel-sub').textContent = sub;
+  document.getElementById('panel-body').innerHTML = bodyHTML;
+  document.getElementById('panel-ftr').innerHTML = ftrHTML;
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('panel').classList.add('open');
+}
+function closePanel() {
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('panel').classList.remove('open');
+}
+
+function buildPanelBody(data) {
+  let html = '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px">';
+  (data.tags||[]).forEach(([t,c])=>{html+=`<span class="ptag pill ${c}">${t}</span>`;});
+  html += '</div>';
+  (data.sections||[]).forEach(s=>{
+    html += `<div class="psec">${s.h}</div><div class="pitem">${s.t.replace(/\n/g,'<br>')}</div>`;
+  });
+  return html;
+}
+
+function buildFtr(drive) {
+  if (!drive) return '<div style="font-size:11px;color:var(--grey);padding:4px 0">📁 Fichier dans Drive DASS PMO (non accessible directement depuis ici)</div>';
+  return `<a href="${drive}" target="_blank">📂 Ouvrir dans Drive</a>`;
+}
+
+function showDoc(key) {
+  const d = DOCS[key]; if(!d) return;
+  openPanel(d.title, d.sub, buildPanelBody(d), buildFtr(d.drive||''));
+}
+function showDeliverable(key) {
+  const d = DELIVERABLES[key]; if(!d) return;
+  const editBtn = `<button onclick="editDeliverableStatus('${key}')" style="background:var(--ink);color:#fff;border:none;padding:6px 12px;font-size:10px;font-weight:600;cursor:pointer;margin-right:8px">✎ Statut/complétude</button><button onclick="editDeliverableSections('${key}')" style="background:var(--grb);border:1px solid var(--border);padding:6px 12px;font-size:10px;font-weight:600;cursor:pointer;margin-right:8px">📝 Contenu détaillé</button>`;
+  openPanel(d.title, d.sub, buildPanelBody(d), editBtn + buildFtr(d.drive||''));
+}
+
+function editDeliverableStatus(key) {
+  const d = DELIVERABLES[key]; if(!d) return;
+  const body = `
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div><label style="font-size:10px;color:var(--grey);font-weight:700">STATUT</label>
+        <select id="edd-statut" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px">
+          ${['NON_DEMARRE','BROUILLON','EN_COURS','PRODUIT'].map(s => `<option value="${s}"${d.statut===s?' selected':''}>${s}</option>`).join('')}
+        </select></div>
+      <div><label style="font-size:10px;color:var(--grey);font-weight:700">COMPLÉTUDE (%)</label>
+        <input id="edd-completude" type="number" min="0" max="100" value="${(d.completude||'').replace('%','')}" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px"></div>
+      <div><label style="font-size:10px;color:var(--grey);font-weight:700">VERSION</label>
+        <input id="edd-version" value="${d.version||''}" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px"></div>
+      <div id="edd-status-msg" style="font-size:11px"></div>
+    </div>`;
+  const ftr = `
+    <button onclick="saveDeliverable('${key}')" style="background:var(--ink);color:#fff;border:none;padding:8px 16px;font-size:11px;font-weight:600;cursor:pointer;margin-right:8px">💾 Enregistrer</button>
+    <button onclick="showDeliverable('${key}')" style="background:var(--grb);border:1px solid var(--border);padding:8px 16px;font-size:11px;font-weight:600;cursor:pointer">✕ Annuler</button>`;
+  openPanel(key, 'Modifier statut / complétude', body, ftr);
+}
+
+// ==== ÉDITEUR DES SECTIONS NARRATIVES (contenu détaillé du panneau) ====
+let editingSections = [];
+
+function editDeliverableSections(key) {
+  const d = DELIVERABLES[key]; if(!d) return;
+  editingSections = JSON.parse(JSON.stringify(d.sections || []));
+  renderSectionsEditor(key);
+}
+
+function renderSectionsEditor(key) {
+  const body = `
+    <div id="sections-list" style="display:flex;flex-direction:column;gap:12px"></div>
+    <button onclick="addSection()" style="margin-top:10px;background:var(--grb);border:1px dashed var(--border);padding:8px;font-size:11px;width:100%;cursor:pointer">+ Ajouter une section</button>
+    <div id="eds-status-msg" style="font-size:11px;margin-top:8px"></div>`;
+  const ftr = `
+    <button onclick="saveDeliverableSections('${key}')" style="background:var(--ink);color:#fff;border:none;padding:8px 16px;font-size:11px;font-weight:600;cursor:pointer;margin-right:8px">💾 Enregistrer</button>
+    <button onclick="showDeliverable('${key}')" style="background:var(--grb);border:1px solid var(--border);padding:8px 16px;font-size:11px;font-weight:600;cursor:pointer">✕ Annuler</button>`;
+  openPanel(key, 'Modifier le contenu détaillé', body, ftr);
+  renderSectionsList();
+}
+
+function renderSectionsList() {
+  const list = document.getElementById('sections-list');
+  if (!list) return;
+  list.innerHTML = editingSections.map((s, i) => `
+    <div style="border:1px solid var(--border);padding:8px;background:var(--surface)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <label style="font-size:10px;color:var(--grey);font-weight:700">TITRE SECTION</label>
+        <button onclick="removeSection(${i})" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:11px">✕ Retirer</button>
+      </div>
+      <input value="${(s.h||'').replace(/"/g,'&quot;')}" oninput="editingSections[${i}].h=this.value" style="width:100%;padding:5px;border:1px solid var(--border);font-size:12px;margin-bottom:6px;font-weight:600">
+      <label style="font-size:10px;color:var(--grey);font-weight:700">TEXTE</label>
+      <textarea oninput="editingSections[${i}].t=this.value" style="width:100%;padding:5px;border:1px solid var(--border);font-size:12px;min-height:60px">${(s.t||'').replace(/</g,'&lt;')}</textarea>
+    </div>`).join('') || '<div style="color:var(--grey);font-size:11px;text-align:center;padding:10px">Aucune section — ajoutez-en une</div>';
+}
+
+function addSection() {
+  editingSections.push({ h: '', t: '' });
+  renderSectionsList();
+}
+
+function removeSection(i) {
+  editingSections.splice(i, 1);
+  renderSectionsList();
+}
+
+async function saveDeliverableSections(key) {
+  const msg = document.getElementById('eds-status-msg');
+  msg.textContent = 'Enregistrement...'; msg.style.color = 'var(--grey)';
+  const payload = { item_id: key, key: ACTIONS_WRITE_KEY, sections_json: JSON.stringify(editingSections) };
+  try {
+    const res = await fetch(DELIVERABLES_WRITE_URL, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    const result = await res.json();
+    if (result.success) {
+      msg.textContent = '✓ Enregistré'; msg.style.color = 'var(--green)';
+      DELIVERABLES[key].sections = JSON.parse(JSON.stringify(editingSections));
+      setTimeout(() => showDeliverable(key), 800);
+    } else {
+      msg.textContent = '✗ Erreur : ' + result.error; msg.style.color = 'var(--red)';
+    }
+  } catch(e) {
+    msg.textContent = '✗ Erreur réseau : ' + e.message; msg.style.color = 'var(--red)';
+  }
+}
+
+async function saveDeliverable(key) {
+  const msg = document.getElementById('edd-status-msg');
+  msg.textContent = 'Enregistrement...'; msg.style.color = 'var(--grey)';
+  const payload = {
+    item_id: key, key: ACTIONS_WRITE_KEY,
+    statut: document.getElementById('edd-statut').value,
+    completude: document.getElementById('edd-completude').value + '%',
+    version: document.getElementById('edd-version').value
+  };
+  try {
+    const res = await fetch(DELIVERABLES_WRITE_URL, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    const result = await res.json();
+    if (result.success) {
+      msg.textContent = '✓ Enregistré'; msg.style.color = 'var(--green)';
+      Object.assign(DELIVERABLES[key], payload);
+      renderDeliverables();
+      setTimeout(() => showDeliverable(key), 800);
+    } else {
+      msg.textContent = '✗ Erreur : ' + result.error; msg.style.color = 'var(--red)';
+    }
+  } catch(e) {
+    msg.textContent = '✗ Erreur réseau : ' + e.message; msg.style.color = 'var(--red)';
+  }
+}
+
+const DELIVERABLES_WRITE_URL = 'https://izharm.app.n8n.cloud/webhook/dass-cockpit-v3-deliverables';
+
+function renderDeliverables() {
+  const tbody = document.getElementById('deliverables-tbody');
+  if (!tbody) return;
+  const keys = Object.keys(DELIVERABLES);
+  if (keys.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--grey);padding:20px">Aucun livrable</td></tr>';
+    return;
+  }
+  tbody.innerHTML = keys.map(key => {
+    const d = DELIVERABLES[key];
+    const pct = parseInt(d.completude) || 0;
+    const pillClass = d.statut === 'PRODUIT' ? 'p-g' : (d.statut === 'EN_COURS' ? 'p-a' : 'p-gr');
+    const pillIcon = d.statut === 'PRODUIT' ? '✓ ' : '';
+    return `<tr class="clickrow" onclick="showDeliverable('${key}')">
+      <td class="mono">${key}</td><td class="bold">${d.shortTitle || d.title}</td>
+      <td style="color:var(--amber);font-family:var(--mono);font-weight:700">${d.echeance || ''}</td>
+      <td><span class="pill ${pillClass}">${pillIcon}${d.statut}</span></td>
+      <td>${d.completude}<div class="pb"><div class="pf g" style="width:${pct}%"></div></div></td>
+      <td>${d.version || ''}</td>
+    </tr>`;
+  }).join('');
+}
+function showTab(n, btn) {
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.nt').forEach(e=>e.classList.remove('active'));
+  document.getElementById('tab-'+n).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel();});
+
+// ──── CHARGEMENT DONNÉES MAIL & CALENDRIER ────
+let allMails = [];
+let allReunions = [];
+
+function tagClass(t) {
+  const m = {DASS:'tag-dass',DINUM:'tag-dinum',CAFAT:'tag-cafat',CHT:'tag-cht',
+    PROVINCE:'tag-province',GOUVERNEMENT:'tag-gouv',COPIL:'tag-copil',
+    ACADYS:'tag-acadys',EXTERNE:'tag-externe',AUTRE:'tag-externe'};
+  return m[t]||'tag-externe';
+}
+
+// Données injectées par le workflow n8n au moment du push (statiques)
+const MAIL_DATA_RAW = [{"mail_id": "1a021e0211972734", "date": "2026-08-21T01:12:05Z", "expediteur": "izhar.mahjoub@acadys.com", "objet": "Re: [EXTERNE] RDV Acadys - DPASS Province Sud", "snippet": "Suite RDV DPASS Province Sud — FRIAT, MEDEVIELLE, STROUSE, PEDRE", "tag": "PROVINCE", "a_pj": true, "nb_pj": 1, "pj_noms": "CR_RDV_Acadys_DPASS_07aout.pdf", "pj_drive_urls": "https://drive.google.com/file/d/1jTVmfPQUSdCZUwbIgZcBHYg0l3U0NvSQ/view", "pj_resume": "CR RDV Acadys-DPASS Province Sud du 07/08/2026 (FRIAT, MEDEVIELLE, STROUSE)", "statut": "reçu", "thread_id": "1a021e0211972734", "corps": "**Izhar (Acadys) → Izhar (gouv.nc)** (21/08)\nEnvoyé à partir de Outlook pour iOS\n\nTransfert du compte Acadys vers le compte gouv.nc.\n\n**Participants RDV DPASS du 07/08** :\n- Jean-Baptiste FRIAT (Province Sud)\n- Georges MEDEVIELLE (Province Sud)\n- Corinne STROUSE (Province Sud)\n- Patricia PEDRE (Province Sud)\n- Stéphane YOTEAU (CVFNC)\n- Izhar MAHJOUB (Acadys/DASS)\n\n📎 CR RDV disponible en pièce jointe"}, {"mail_id": "1a021338469fb54f", "date": "2026-08-21T00:31:27Z", "expediteur": "joanne.tallon@gouv.nc", "objet": "[Enreg. PS] RSNC/RESEMS/IPS — disponibilité API hors NC", "snippet": "RESEMS (≡FINESS) et IPS (≡RPPS) présents dans RSNC — API + guide d'implémentation ?", "tag": "DASS", "a_pj": false, "nb_pj": 0, "pj_noms": "", "pj_drive_urls": "", "pj_resume": "", "statut": "non lu", "thread_id": "1a021338469fb54f", "corps": "**Joanne TALLON → Izhar MAHJOUB** (21/08 11:27)\nOui et c'est pour cela que nous avons le RESEMS (equivalent finess) et l'IPS (equivalent du RPPS) en nouvelle calédonie. Les 2 registres déjà présents dans RSNC et qu'on pourra dès à présent partager via une api et un guide d'implémentation?\n\n---\n**Izhar MAHJOUB → Joanne TALLON** (21/08 11:15)\nTout à fait. Ces API sont au cœur du projet/programme e-santé et j'attends le feu vert pour mettre ça en œuvre.\n\n---\n**Joanne TALLON → Sarita RICHÉ** (21/08 09:03)\nOn avait soulevé ce manque à la DINUM (annuaire santé non disponible en dehors de la NC). Charles nous avait laissé entendre que le site serait prochainement disponible en dehors de la NC. Est-ce que tu en sais plus ?\n\n---\n**Sarita RICHÉ → Joanne TALLON** (21/08 10:28)\nJe n'ai pas d'information à ce jour sur l'ouverture de l'annuaire hors NC. Je fais le point avec la DINUM. Sur le fond, je prévois un atelier dédié à l'annuaire pour recenser les améliorations à apporter, comme annoncé en COPIL.\n\n---\n**ANS (réponse FINESS)** : « Les établissements et services de Nouvelle-Calédonie ne disposent pas de numéro FINESS. » → Utiliser RESEMS (équivalent NC)."}, {"mail_id": "1a01cc21bd9e6a40", "date": "2026-08-20T01:21:13Z", "expediteur": "m.elmhamdi@has-sante.fr", "objet": "Réponse automatique : Projet e-Santé NC – Collaboration HAS (RESAHOC)", "snippet": "Absent jusqu'au 21/08 — Dr. Mounir EL MHAMDI, Référent de coopération internationale HAS", "tag": "DASS", "a_pj": false, "nb_pj": 0, "pj_noms": "", "pj_drive_urls": "", "pj_resume": "", "statut": "reçu", "thread_id": "1a01cc21bd9e6a40", "corps": "**Dr. Mounir EL MHAMDI / HAS** (réponse automatique)\n\nBonjour,\n\nJe suis absent du bureau jusqu'au 21/08/2026 inclus.\n\nJe prendrai connaissance de votre message dès mon retour et vous répondrai dans les meilleurs délais.\n\nDR. Mounir EL MHAMDI\nRéférent de coopération internationale\nHaute Autorité de Santé (HAS)"}, {"mail_id": "1a01bf4b846e2562", "date": "2026-08-19T21:36:31Z", "expediteur": "info.generale@gouv.nc", "objet": "URGENT: Appel à volontaires – Renfort Congrès NC 24 août (DPG TUKUMULI)", "snippet": "Mission de renfort au Congrès NC dans le cadre de la DPG du président TUKUMULI", "tag": "DASS", "a_pj": false, "nb_pj": 0, "pj_noms": "", "pj_drive_urls": "", "pj_resume": "", "statut": "reçu", "thread_id": "1a01bf4b846e2562", "corps": "**info.generale@gouv.nc** (19/08)\n\nBonjour,\n\nUne mission de renfort, prévue sur une seule journée, est proposée aux agents du gouvernement de la Nouvelle-Calédonie.\n\nDans le cadre de la déclaration de politique générale (DPG) du président TUKUMULI, des agents sont recherchés pour renforcer les équipes du Congrès le 24 août 2026.\n\nMerci de manifester votre intérêt auprès de votre hiérarchie."}, {"mail_id": "1a01846dc107b355", "date": "2026-08-19T04:27:22Z", "expediteur": "celine.qaeze@gouv.nc", "objet": "Feuille de route E-Santé - Interview", "snippet": "À quoi doit servir la feuille de route e-santé ? Exemples concrets pour la communication DASS", "tag": "DASS", "a_pj": false, "nb_pj": 0, "pj_noms": "", "pj_drive_urls": "", "pj_resume": "", "statut": "traité", "thread_id": "1a01846dc107b355", "corps": "**Céline QAEZE → Izhar** (19/08 04:27)\nIzhar, comme échangé tout à l'heure voici la question pour l'interview :\nÀ quoi doit servir la feuille de route e-santé ? Pouvez-vous nous donner des exemples concrets de ce qu'elle va changer pour les Calédoniens ?\n\n---\n**Izhar → Céline QAEZE** (19/08 05:06)\nCeline,\nVoilà des idées qui correspondent à la feuille de route que nous proposons.\n\n**Paragraphe de synthèse** : La feuille de route e-santé structure un écosystème interopérable qui permet au Gouvernement de la NC de piloter le système de santé avec des données fiables, de garantir la continuité des soins sur tout le territoire, et de moderniser les échanges entre professionnels de santé, établissements et organismes.\n\n**Exemples concrets** :\n- Un médecin en brousse peut accéder au dossier d'un patient EVASAN avant son transfert\n- CAFAT peut recevoir des feuilles de soins structurées sans ressaisie manuelle\n- La DASS pilote l'activité de ses 5 CMS en temps réel via des tableaux de bord unifiés"}, {"mail_id": "1a014966f7d18228", "date": "2026-08-18T22:35:47Z", "expediteur": "izhar@mohim.net", "objet": "Présentation e-Santé (prez)", "snippet": "Présentation e-Santé NC transmise à Corinne BUFNOIR", "tag": "ACADYS", "a_pj": true, "nb_pj": 1, "pj_noms": "Presentation_eSante_NC.pptx", "pj_drive_urls": "", "pj_resume": "Présentation e-Santé NC — support COPIL ou DASS", "statut": "reçu", "thread_id": "1a014966f7d18228", "corps": "**izhar@mohim.net → Izhar gouv.nc** (18/08 11:16)\nPièce jointe : présentation\n\n---\n**Izhar → Corinne BUFNOIR** (18/08 22:35)\nBonjour Corinne,\nVoilà la présentation de ce matin.\nBien à toi, Izhar\n\n---\n**Corinne BUFNOIR → Izhar** (18/08 23:26)\nMerci Izhar."}, {"mail_id": "1a016ae19f1d2eaa", "date": "2026-08-18T21:09:09Z", "expediteur": "joanne.tallon@gouv.nc", "objet": "Indisponibilité RSNC — ticket JIRA SDA-5519 ouvert", "snippet": "RSNC non fonctionnel ce matin — ticket ouvert SDA-5519, pb résolu, Drive persistant", "tag": "DASS", "a_pj": false, "nb_pj": 0, "pj_noms": "", "pj_drive_urls": "", "pj_resume": "", "statut": "reçu", "thread_id": "1a016ae19f1d2eaa", "corps": "**Joanne TALLON → Sarita RICHÉ** (19/08 08:01)\nRSNC n'est pas fonctionnel ce matin. (message d'erreur technique quand on se connecte). Est-ce que tu peux regarder ou bien je fais une JIRA urgence au SDA ?\n\n---\n**Sarita RICHÉ → Joanne** (19/08 08:04)\nBonjour Joanne, Je te conseille de faire un ticket JIRA. Je vais essayer en parallèle de contacter quelqu'un.\n\n---\n**Joanne TALLON** (19/08 08:09)\nOk merci. C'est fait pour le ticket : https://jira.gouv.nc/browse/SDA-5519\n\n---\n**Nancy MULIAVA** (19/08)\nBonjour, Le pb est résolu pour RSNC. Pour le Drive par contre je ne peux rien faire (pb de connexion ou de permission ?). Il faut voir avec les PRI."}, {"mail_id": "1a0135755d775d54", "date": "2026-08-18T05:27:53Z", "expediteur": "sarita.riche.prestataire@gouv.nc", "objet": "[Projet E-Santé] COPIL #1 — support, compte-rendu et fichier de suivi", "snippet": "Documents COPIL #1 du 11 août déposés dans le répertoire partagé du programme e-santé", "tag": "DASS", "a_pj": true, "nb_pj": 3, "pj_noms": "Support_COPIL1.pptx, CR_COPIL1.docx, Suivi_actions.xlsx", "pj_drive_urls": "https://drive.google.com/drive/folders/1YUXr3ZwPYW_iKnBucxaD0975yj4tCNiY", "pj_resume": "Support + CR + suivi actions COPIL #1 e-Santé du 11/08", "statut": "reçu", "thread_id": "1a0135755d775d54", "corps": "**Sarita RICHÉ** (18/08 05:27)\n\nBonjour,\n\nJe vous remercie de votre participation au premier COPIL du programme e-santé, le 11 août.\n\nLes documents suivants sont déposés dans le répertoire partagé du programme e-santé :\n- le support de présentation\n- le compte-rendu\n- le fichier de suivi des actions\n\nN'hésitez pas à me faire part de vos commentaires.\n\nCordialement,\nSarita RICHÉ — Projet E-Santé · +687 81 09 35\n\n**Destinataires** : Céline QAEZE, Chantal BAROUSSE, Charles BIONDI, Corinne BUFNOIR, Isabelle LABOMME, Isabelle PELAGE, Izhar MAHJOUB, Joanne TALLON, Luc MONIMEAU, Marie-Laure MESTRE, Vanessa FRAYSSINET, Carole PERRAUDEAU"}, {"mail_id": "1a00e35d4ddf4b3c", "date": "2026-08-17T05:33:05Z", "expediteur": "marie-laure.mestre@gouv.nc", "objet": "Commission audit CAFAT/SYNAPSE — 25 août 2026 9H00", "snippet": "MESTRE transmet invitation commission audit CAFAT + GIE SYNAPSE pour info Izhar", "tag": "CAFAT", "a_pj": true, "nb_pj": 2, "pj_noms": "OdJ_Commission_audit_CAFAT_25aout.pdf, Note_GIE_SYNAPSE.pdf", "pj_drive_urls": "", "pj_resume": "OdJ Commission audit CAFAT 25/08 + Note GIE SYNAPSE", "statut": "reçu", "thread_id": "1a00e35d4ddf4b3c", "corps": "**Marie-Laure MESTRE → Izhar** (17/08 05:33)\n\nIzhar,\n\nJe te partage les éléments reçus ce jour pour une prochaine réunion à laquelle je suis invitée et qui concerne le SI de la CAFAT mais également le GIE SYNAPSE.\n\nCordialement,\nMarie-Laure MESTRE\nDirecteur DASS · (687) 24 37 00\n\n---\n**Izhar → MESTRE** (17/08 05:41)\nMerci Marie-Laure, Bien reçu, je regarde ça et je te ferai un retour demain matin si tu veux bien. Bonne soirée."}, {"mail_id": "1a00da05f11c28d3", "date": "2026-08-17T02:49:57Z", "expediteur": "joanne.tallon@gouv.nc", "objet": "Tickets JIRA RSNC — bugs enregistrement professionnels de santé", "snippet": "Situation exercice incorrecte, bugs affichage enregistrement PS dans RSNC", "tag": "DASS", "a_pj": false, "nb_pj": 0, "pj_noms": "", "pj_drive_urls": "", "pj_resume": "", "statut": "reçu", "thread_id": "1a00da05f11c28d3", "corps": "**Joanne TALLON → Sarita RICHÉ** (17/08 02:49)\n\nBonjour Sarita,\n\nPour info, voici les JIRA que j'avais signalées pour le RSNC (correctifs remontés par le bureau des enregistrements) :\n- la situation d'exercice affichée n'est pas la bonne\n- [autres bugs enregistrement PS]\n\n---\n**Sarita RICHÉ → Joanne** (18/08 01:57)\nBonjour Joanne, Je vais faire le point avec la DINUM. Je vais aussi vérifier que l'on ne retrouve pas ces bugs dans la V2 du RSNC. Belle journée."}, {"mail_id": "1a00c29258a961e1", "date": "2026-08-16T09:20:23Z", "expediteur": "im0668@gmail.com", "objet": "Australian Healthcare Interoperability Capability — Evidence-led analysis", "snippet": "Rapport interopérabilité santé Australie — partagé via Adobe Acrobat", "tag": "EXTERNE", "a_pj": true, "nb_pj": 1, "pj_noms": "Australian_Healthcare_Interoperability_Capability.pdf", "pj_drive_urls": "", "pj_resume": "Rapport interopérabilité santé Australie — analyse fondée sur les preuves", "statut": "reçu", "thread_id": "1a00c29258a961e1", "corps": "**im0668@gmail.com → Izhar** (16/08)\n\nPartagé via Adobe Acrobat.\n\n📎 Australian Healthcare Interoperability Capability | Evidence-led analysis.pdf\n\n[Document de référence sur l'interopérabilité des systèmes de santé en Australie — benchmark pertinent pour le programme e-Santé NC]"}, {"mail_id": "19ff9353af68aace", "date": "2026-08-13T03:40:29Z", "expediteur": "marie-laure.mestre@gouv.nc", "objet": "Reconstruction SI CAFAT — Infos 2025", "snippet": "MESTRE partage document reconstruction SI CAFAT 2025", "tag": "CAFAT", "a_pj": true, "nb_pj": 1, "pj_noms": "SI_CAFAT_Reconstruction_2025.pdf", "pj_drive_urls": "", "pj_resume": "Document reconstruction SI CAFAT 2025 — programme pluriannuel", "statut": "reçu", "thread_id": "19ff9353af68aace", "corps": "**Marie-Laure MESTRE → Izhar** (13/08)\n\nDocument de reconstruction du SI CAFAT 2025 transmis pour information.\n\nCordialement,\nMarie-Laure MESTRE — DASS · (687) 24 37 00"}, {"mail_id": "19ff36e75d08477e", "date": "2026-08-12T00:45:29Z", "expediteur": "marie-laure.mestre@gouv.nc", "objet": "Invitation: Feuille de route SI DASS — mer. 12 août 14h-15h", "snippet": "Réunion vision SI DASS avec MESTRE, Sarita RICHÉ, Joanne TALLON", "tag": "DASS", "a_pj": false, "nb_pj": 0, "pj_noms": "", "pj_drive_urls": "", "pj_resume": "", "statut": "reçu", "thread_id": "19ff36e75d08477e", "corps": "**Marie-Laure MESTRE → Izhar, Sarita RICHÉ, Joanne TALLON** (12/08)\n\nFeuille de route SI DASS\nParticiper avec Google Meet\n\nBonjour Marie-Laure,\n\nJe te propose ce point pour que tu puisses me définir ta vision pour la DASS au niveau des outils et des améliorations SI que tu souhaites — ceci afin d'établir la feuille de route SI DASS.\n\n📅 Mercredi 12 août 2026 · 14h00-15h00 (UTC+11)\n🎙 Google Meet"}, {"mail_id": "19fea1fdc0b4c91e", "date": "2026-08-10T05:22:41Z", "expediteur": "isabelle.rabault@gouv.nc", "objet": "Les données du CHT", "snippet": "Données d'activité CHT récupérées — application IA et podcast sur les données", "tag": "CHT", "a_pj": true, "nb_pj": 1, "pj_noms": "Donnees_activite_CHT_2026.xlsx", "pj_drive_urls": "", "pj_resume": "Données activité CHT 2026 — tableau Excel", "statut": "reçu", "thread_id": "19fea1fdc0b4c91e", "corps": "**Isabelle RABAULT → Izhar** (10/08)\n\nBonjour Yzhar,\n\nVoici des données d'activité du CHT que j'ai récupérées la semaine dernière. Tu verras, j'ai mis en application ce que tu m'as appris sur l'IA et les podcasts ;-)\n\nEn pièce jointe le fichier Excel.\n\nIsabelle"}, {"mail_id": "19fd5e5e9efbc73b", "date": "2026-08-06T07:07:07Z", "expediteur": "marie-laure.mestre@gouv.nc", "objet": "[DASS] Sollicitation agrément hébergement données de santé — Lp. 2111-1", "snippet": "Demande agrément HDS reçue sur boite DASS — format juridique requis", "tag": "DASS", "a_pj": false, "nb_pj": 0, "pj_noms": "", "pj_drive_urls": "", "pj_resume": "", "statut": "reçu", "thread_id": "19fd5e5e9efbc73b", "corps": "**Marie-Laure MESTRE → David GINOCCHI, Georges WAPAE, Charles BIONDI** (06/08)\n[Izhar en CCI]\n\nBonsoir David,\n\nNous avons reçu sur la boite mail générique de la DASS une sollicitation d'agrément pour l'activité d'hébergement de données de santé à caractère personnel (Article Lp. 2111-1).\n\nLes termes étant très juridiques, je te remercie de ton accompagnement sur le format de la réponse à apporter.\n\n[Lien avec RISK-FDR-004 : agrément hébergement LP 2026-5 — stand-by délibéré, textes d'application en attente]"}]; // Mails chargés via n8n Mail & Calendar Sync (workflow E33IcRrokYkhpmDD)
+const REUN_DATA_RAW = [{"event_id": "lmpu6f6r7qlib22u91rcti1vds", "titre": "Coiffeur", "date_debut": "2026-08-15T14:30:00+11:00", "date_fin": "2026-08-15T15:30:00+11:00", "organisateur": "izhar.mahjoub.prestataire@gouv.nc", "participants": "", "lieu": "", "statut": "passée", "tag": "PERSO", "pv_drive_url": "", "actions_extraites": "", "lien_event": "https://www.google.com/calendar/event?eid=bG1wdTZmNnI3cWxpYjIydTkxcmN0aTF2ZHMgaXpoYXIubWFoam91Yi5wcmVzdGF0YWlyZUBnb3V2Lm5j"}, {"event_id": "qjru1le8h7e2l00b589sanjfhc", "titre": "Déjeuner chez Stephane", "date_debut": "2026-08-15T20:00:00+11:00", "date_fin": "2026-08-15T22:00:00+11:00", "organisateur": "izhar.mahjoub.prestataire@gouv.nc", "participants": "", "lieu": "", "statut": "passée", "tag": "PERSO", "pv_drive_url": "", "actions_extraites": "", "lien_event": "https://www.google.com/calendar/event?eid=cWpydTFsZThoN2UybDAwYjU4OXNhbmpmaGMgaXpoYXIubWFoam91Yi5wcmVzdGF0YWlyZUBnb3V2Lm5j"}, {"event_id": "4afjvumjbjipgkquj792irg246_20260816T230000Z", "titre": "CODIR Hebdomadaire DASS", "date_debut": "2026-08-17T10:00:00+11:00", "date_fin": "2026-08-17T11:00:00+11:00", "organisateur": "izhar.mahjoub.prestataire@gouv.nc", "participants": "Équipe DASS", "lieu": "Google Meet", "statut": "passée", "tag": "DASS", "pv_drive_url": "", "actions_extraites": "", "lien_event": "https://www.google.com/calendar/event?eid=NGFmanZ1bWpiamlwZ2txdWo3OTJpcmcyNDZfMjAyNjA4MTZUMjMwMDAwWiBpemhhci5tYWhqb3ViLnByZXN0YXRhaXJlQGdvdXYubmM"}, {"event_id": "8u7vn325t9gdeusmeab8289t5k", "titre": "Dossier prioritaire — concentration", "date_debut": "2026-08-18T09:00:00+11:00", "date_fin": "2026-08-18T12:00:00+11:00", "organisateur": "izhar.mahjoub.prestataire@gouv.nc", "participants": "", "lieu": "", "statut": "passée", "tag": "DASS", "pv_drive_url": "", "actions_extraites": "", "lien_event": "https://www.google.com/calendar/event?eid=OHU3dm4zMjV0OWdkZXVzbWVhYjgyODl0NWsgaXpoYXIubWFoam91Yi5wcmVzdGF0YWlyZUBnb3V2Lm5j"}, {"event_id": "11umfkjgfl1pkiakpkvambfe18_20260818T210000Z", "titre": "La 1/2 heure E-SANTE", "date_debut": "2026-08-19T08:00:00+11:00", "date_fin": "2026-08-19T08:30:00+11:00", "organisateur": "elodie.peccard@gouv.nc", "participants": "Elodie PECCARD, Agents DASS, Marie-Laure MESTRE +30", "lieu": "Salle des commissions DASS Bat H", "statut": "passée", "tag": "DASS", "pv_drive_url": "", "actions_extraites": "Présentation DEL-001 v1.4 — MESTRE", "lien_event": "https://www.google.com/calendar/event?eid=MTF1bWZramdmbDFwa2lha3BrdmFtYmZlMThfMjAyNjA4MThUMjEwMDAwWiBpemhhci5tYWhqb3ViLnByZXN0YXRhaXJlQGdvdXYubmM"}, {"event_id": "j129r1db65ofqprvt0718laqmo", "titre": "Préparation échéance J-16", "date_debut": "2026-08-20T09:00:00+11:00", "date_fin": "2026-08-20T11:00:00+11:00", "organisateur": "izhar.mahjoub.prestataire@gouv.nc", "participants": "", "lieu": "", "statut": "passée", "tag": "DASS", "pv_drive_url": "", "actions_extraites": "", "lien_event": "https://www.google.com/calendar/event?eid=ajEyOXIxZGI2NW9mcXBydnQwNzE4bGFxbW8gaXpoYXIubWFoam91Yi5wcmVzdGF0YWlyZUBnb3V2Lm5j"}, {"event_id": "h3hg7k3i6bqhr6ll4ube89cn4c", "titre": "Rattrapage / dossiers en attente", "date_debut": "2026-08-21T14:00:00+11:00", "date_fin": "2026-08-21T16:00:00+11:00", "organisateur": "izhar.mahjoub.prestataire@gouv.nc", "participants": "", "lieu": "", "statut": "à venir", "tag": "DASS", "pv_drive_url": "", "actions_extraites": "", "lien_event": "https://www.google.com/calendar/event?eid=aDNoZzdrM2k2YnFocjZsbDR1YmU4OWNuNGMgaXpoYXIubWFoam91Yi5wcmVzdGF0YWlyZUBnb3V2Lm5j"}, {"event_id": "4afjvumjbjipgkquj792irg246_20260823T230000Z", "titre": "CODIR Hebdomadaire DASS", "date_debut": "2026-08-24T10:00:00+11:00", "date_fin": "2026-08-24T11:00:00+11:00", "organisateur": "izhar.mahjoub.prestataire@gouv.nc", "participants": "Équipe DASS", "lieu": "Google Meet", "statut": "à venir", "tag": "DASS", "pv_drive_url": "", "actions_extraites": "", "lien_event": "https://www.google.com/calendar/event?eid=NGFmanZ1bWpiamlwZ2txdWo3OTJpcmcyNDZfMjAyNjA4MjNUMjMwMDAwWiBpemhhci5tYWhqb3ViLnByZXN0YXRhaXJlQGdvdXYubmM"}, {"event_id": "3uvdi4g2918ckk227k8c5rl4ju", "titre": "Petit déj départ Vanessa T.", "date_debut": "2026-08-26T07:30:00+11:00", "date_fin": "2026-08-26T08:30:00+11:00", "organisateur": "vanessa.top@gouv.nc", "participants": "Vanessa TOP, Marie-Laure MESTRE, Agents DASS +25", "lieu": "Cafétéria Bat H DASS", "statut": "à venir", "tag": "DASS", "pv_drive_url": "", "actions_extraites": "½h E-SANTE annulée ce matin", "lien_event": "https://www.google.com/calendar/event?eid=M3V2ZGk0ZzI5MThja2syMjdrOGM1cmw0anUgaXpoYXIubWFoam91Yi5wcmVzdGF0YWlyZUBnb3V2Lm5j"}, {"event_id": "4afjvumjbjipgkquj792irg246_20260830T230000Z", "titre": "CODIR Hebdomadaire DASS", "date_debut": "2026-08-31T10:00:00+11:00", "date_fin": "2026-08-31T11:00:00+11:00", "organisateur": "izhar.mahjoub.prestataire@gouv.nc", "participants": "Équipe DASS", "lieu": "Google Meet", "statut": "à venir", "tag": "DASS", "pv_drive_url": "", "actions_extraites": "", "lien_event": "https://www.google.com/calendar/event?eid=NGFmanZ1bWpiamlwZ2txdWo3OTJpcmcyNDZfMjAyNjA4MzBUMjMwMDAwWiBpemhhci5tYWhqb3ViLnByZXN0YXRhaXJlQGdvdXYubmM"}, {"event_id": "11umfkjgfl1pkiakpkvambfe18_20260901T210000Z", "titre": "La 1/2 heure E-SANTE", "date_debut": "2026-09-02T08:00:00+11:00", "date_fin": "2026-09-02T08:30:00+11:00", "organisateur": "elodie.peccard@gouv.nc", "participants": "Elodie PECCARD, Agents DASS, Marie-Laure MESTRE +30", "lieu": "Salle des commissions DASS Bat H", "statut": "à venir", "tag": "DASS", "pv_drive_url": "", "actions_extraites": "", "lien_event": "https://www.google.com/calendar/event?eid=MTF1bWZramdmbDFwa2lha3BrdmFtYmZlMThfMjAyNjA5MDFUMjEwMDAwWiBpemhhci5tYWhqb3ViLnByZXN0YXRhaXJlQGdvdXYubmM"}, {"event_id": "4afjvumjbjipgkquj792irg246_20260906T230000Z", "titre": "CODIR Hebdomadaire DASS", "date_debut": "2026-09-07T10:00:00+11:00", "date_fin": "2026-09-07T11:00:00+11:00", "organisateur": "izhar.mahjoub.prestataire@gouv.nc", "participants": "Équipe DASS", "lieu": "Google Meet", "statut": "à venir", "tag": "DASS", "pv_drive_url": "", "actions_extraites": "⚡ Veille deadline DEL-001→004 (06/09)", "lien_event": "https://www.google.com/calendar/event?eid=NGFmanZ1bWpiamlwZ2txdWo3OTJpcmcyNDZfMjAyNjA5MDZUMjMwMDAwWiBpemhhci5tYWhqb3ViLnByZXN0YXRhaXJlQGdvdXYubmM"}];
+
+function loadMailData() {
+  try {
+    const data = Array.isArray(MAIL_DATA_RAW) ? MAIL_DATA_RAW : [];
+    allMails = data.sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
+    renderMails(allMails);
+  } catch(e) {
+    document.getElementById('mail-tbody').innerHTML =
+      '<tr><td colspan="6" style="padding:20px;color:var(--grey);text-align:center">⚠ Données non disponibles — relancer le workflow inject n8n</td></tr>';
+  }
+  return Promise.resolve();
+}
+
+function loadReunionData() {
+  try {
+    const data = Array.isArray(REUN_DATA_RAW) ? REUN_DATA_RAW : [];
+    allReunions = data.sort((a,b)=>new Date(a.date_debut||0)-new Date(b.date_debut||0));
+    renderReunions(allReunions);
+    renderRelations(allMails, allReunions);
+    renderProgramme();
+  } catch(e) {
+    document.getElementById('reun-tbody').innerHTML =
+      '<tr><td colspan="6" style="padding:20px;color:var(--grey);text-align:center">⚠ Données non disponibles — relancer le workflow inject n8n</td></tr>';
+  }
+  return Promise.resolve();
+}
+
+function renderMails(mails) {
+  const tb = document.getElementById('mail-tbody');
+  document.getElementById('mail-count').textContent = mails.length + ' mail(s)';
+  if (!mails.length) {
+    tb.innerHTML = `<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--grey)">
+      <div style="font-size:14px;margin-bottom:8px">📭 Aucun mail synchronisé</div>
+      <div style="font-size:11px">Active le workflow <strong>DASS - Mail & Calendar Sync</strong> dans n8n<br>
+      (workflow ID : E33IcRrokYkhpmDD) puis relance le workflow inject.</div>
+      <div style="margin-top:8px"><a href="https://izharm.app.n8n.cloud/workflow/E33IcRrokYkhpmDD" target="_blank" 
+        style="background:var(--nc);color:#fff;padding:6px 14px;font-size:11px;font-weight:700;text-decoration:none;display:inline-block">
+        → Activer dans n8n</a></div>
+    </td></tr>`;
+    return;
+  }
+  tb.innerHTML = mails.map((m, idx) => {
+    const d = m.date ? new Date(m.date) : null;
+    const ds = d ? d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}) : '—';
+    let pjHtml = '—';
+    if (m.a_pj && m.nb_pj > 0) {
+      const names = (m.pj_noms||'').split(',').map(p=>p.trim()).filter(Boolean);
+      const urls = (m.pj_drive_urls||'').split(',').map(u=>u.trim()).filter(Boolean);
+      pjHtml = names.map((name,i) => {
+        const url = urls[i] || '';
+        if (url) {
+          return `<a href="${url}" target="_blank" onclick="event.stopPropagation()" style="display:block;font-size:9px;color:var(--blue);font-weight:700;margin-bottom:2px;text-decoration:none" title="Télécharger ${name}">📎 ${name.substring(0,20)}</a>`;
+        } else {
+          return `<span style="display:block;font-size:9px;color:var(--amber);font-weight:700;margin-bottom:2px" title="${name}">📎 ${name.substring(0,20)}</span>`;
+        }
+      }).join('');
+    }
+    const statut = m.statut === 'non lu' ? '<span class="pill p-b">Non lu</span>' : m.statut === 'traité' ? '<span class="pill p-g">Traité</span>' : `<span class="pill p-gr">${m.statut||'reçu'}</span>`;
+    return `<tr class="clickrow" onclick="showMail(${idx})" style="cursor:pointer">
+      <td><span class="mtag ${tagClass(m.tag)}">${m.tag||'?'}</span></td>
+      <td class="mono" style="font-size:10px">${ds}</td>
+      <td style="font-size:10px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${m.expediteur}">${m.expediteur||'—'}</td>
+      <td style="font-size:11px">
+        <span class="${m.statut==='non lu'?'bold':''}">${(m.objet||'').substring(0,65)}</span>
+        ${m.snippet?`<br><span style="font-size:10px;color:var(--grey)">${m.snippet.substring(0,90)}…</span>`:''}
+      </td>
+      <td onclick="event.stopPropagation()">${pjHtml}</td>
+      <td>${statut}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderReunions(reunions) {
+  const tb = document.getElementById('reun-tbody');
+  document.getElementById('reun-count').textContent = reunions.length + ' réunion(s)';
+  if (!reunions.length) {
+    tb.innerHTML = '<tr><td colspan="6" style="padding:20px;text-align:center;color:var(--grey)">Aucune réunion à afficher</td></tr>';
+    return;
+  }
+  tb.innerHTML = reunions.map(r => {
+    const d = r.date_debut ? new Date(r.date_debut) : null;
+    const ds = d ? d.toLocaleDateString('fr-FR',{weekday:'short',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : '—';
+    const scls = r.statut==='passée'?'statut-passe':r.statut==='annulée'?'statut-annule':'statut-avenir';
+    const rowCls = r.statut==='à venir' ? 'rr-a-venir' : (r.statut==='annulée' ? 'rr-annulee' : 'rr-passee');
+    const pvLink = r.pv_drive_url ? `<a href="${r.pv_drive_url}" target="_blank" style="color:var(--blue);font-size:10px">📄 PV</a>` : '—';
+    const partCourt = (r.participants||'').split(',').slice(0,2).join(', ') + ((r.participants||'').split(',').length>2?'…':'');
+    const lien = r.lien_event ? `<a href="${r.lien_event}" target="_blank" style="font-size:10px;color:var(--blue)">🔗</a>` : '';
+    return `<tr class="mrow ${rowCls}">
+      <td><span class="mtag ${tagClass(r.tag)}">${r.tag||'?'}</span></td>
+      <td class="mono" style="font-size:10px">${ds}</td>
+      <td style="font-size:11px"><span class="bold">${r.titre||'—'}</span> ${lien}
+        ${r.actions_extraites?`<br><span style="font-size:10px;color:var(--amber)">⚡ ${r.actions_extraites.substring(0,60)}</span>`:''}
+      </td>
+      <td><span class="${scls}" style="font-size:10px">${r.statut||'—'}</span></td>
+      <td>${pvLink}</td>
+      <td style="font-size:10px;color:var(--grey)">${partCourt}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderRelations(mails, reunions) {
+  const orgs = {
+    DASS: {mails:[], reunions:[], last:null},
+    DINUM: {mails:[], reunions:[], last:null},
+    CAFAT: {mails:[], reunions:[], last:null},
+    CHT: {mails:[], reunions:[], last:null},
+    PROVINCE: {mails:[], reunions:[], last:null},
+    GOUVERNEMENT: {mails:[], reunions:[], last:null}
+  };
+
+  mails.forEach(m=>{if(orgs[m.tag]) orgs[m.tag].mails.push(m);});
+  reunions.forEach(r=>{if(orgs[r.tag]) orgs[r.tag].reunions.push(r);});
+
+  const buildCard = (org, data) => {
+    const lastMail = data.mails[0];
+    const nextReun = data.reunions.find(r=>r.statut==='à venir');
+    const lastReun = data.reunions.filter(r=>r.statut==='passée').slice(-1)[0];
+    if (!data.mails.length && !data.reunions.length) return `<div style="color:var(--grey);font-size:11px;padding:8px 0">Aucune interaction enregistrée</div>`;
+    return `<div class="rel-card">
+      <div class="rel-hdr">
+        <span class="rel-org"><span class="mtag ${tagClass(org)}">${org}</span></span>
+        <span class="rel-count">${data.mails.length} mail(s) · ${data.reunions.length} réunion(s)</span>
+      </div>
+      ${lastMail?`<div class="rel-last">📧 Dernier mail : <strong>${lastMail.objet.substring(0,40)}</strong> — ${lastMail.expediteur.split('<')[0].trim()}</div>`:''}
+      ${nextReun?`<div class="rel-last" style="color:var(--blue)">📅 Prochaine réunion : <strong>${nextReun.titre.substring(0,40)}</strong> — ${new Date(nextReun.date_debut).toLocaleDateString('fr-FR')}</div>`:''}
+      ${lastReun?`<div class="rel-last">✓ Dernière réunion : ${lastReun.titre.substring(0,40)} — ${new Date(lastReun.date_debut).toLocaleDateString('fr-FR')}${lastReun.pv_drive_url?` <a href="${lastReun.pv_drive_url}" target="_blank" style="color:var(--blue)">PV</a>`:' <span style="color:var(--red);font-size:10px">PV manquant</span>'}</div>`:''}
+    </div>`;
+  };
+
+  document.getElementById('rel-dass').innerHTML = buildCard('DASS', orgs.DASS) + buildCard('GOUVERNEMENT', orgs.GOUVERNEMENT);
+  document.getElementById('rel-dinum').innerHTML = buildCard('DINUM', orgs.DINUM);
+  document.getElementById('rel-cafat').innerHTML = buildCard('CAFAT', orgs.CAFAT);
+  document.getElementById('rel-autres').innerHTML = buildCard('CHT', orgs.CHT) + buildCard('PROVINCE', orgs.PROVINCE);
+}
+function renderProgramme() {
+  const agendaSource = (typeof AGENDA_DATA_RAW !== "undefined" && AGENDA_DATA_RAW) ? AGENDA_DATA_RAW : allReunions;
+  const now = new Date();
+  const day = now.getDay();
+  const diffToMonday = (day === 0 ? -6 : 1) - day;
+  const monday = new Date(now); monday.setHours(0,0,0,0); monday.setDate(now.getDate() + diffToMonday);
+
+  const dayNames = ["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
+  const days = [];
+  for (let i=0;i<7;i++){ const d=new Date(monday); d.setDate(monday.getDate()+i); days.push(d); }
+  const sunday = days[6];
+  const weekEnd = new Date(sunday); weekEnd.setHours(23,59,59,999);
+
+  const weekEvents = agendaSource.filter(function(r){
+    const d = new Date(r.date_debut);
+    return d >= monday && d <= weekEnd;
+  }).sort(function(a,b){ return new Date(a.date_debut)-new Date(b.date_debut); });
+
+  const grid = document.getElementById('prog-week-grid');
+  grid.innerHTML = days.map(function(d, idx){
+    const isToday = d.toDateString() === now.toDateString();
+    const dayEvents = weekEvents.filter(function(r){
+      const rd = new Date(r.date_debut);
+      return rd.toDateString() === d.toDateString();
+    });
+    const evHtml = dayEvents.length ? dayEvents.map(function(r){
+      const rd = new Date(r.date_debut);
+      const t = rd.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
+      const past = r.statut === "passée";
+      const isKey = /presidence|tukumuli/i.test(String(r.titre||''));
+      const bg = isKey ? '#fff3cd' : (past ? '#e8e8e6' : 'var(--bb)');
+      const fg = past ? 'var(--grey)' : 'var(--nc)';
+      const strike = past ? ';text-decoration:line-through' : '';
+      const border = isKey ? ';border-left:3px solid var(--amber)' : '';
+      return '<div style="background:' + bg + ';color:' + fg + ';border-radius:2px;padding:3px 5px;margin-bottom:3px;font-size:9px;line-height:1.3' + strike + border + '"><strong>' + t + '</strong><br>' + String(r.titre||'').substring(0,26) + '</div>';
+    }).join('') : '<div style="font-size:9px;color:#ccc;padding:4px 0">—</div>';
+    const cellBg = isToday ? '#fef9ec' : '#fafaf8';
+    const labelColor = isToday ? 'var(--amber)' : 'var(--grey)';
+    return '<div style="background:' + cellBg + ';border:1px solid var(--bl);border-radius:3px;padding:6px 4px;min-height:90px">' +
+      '<div style="font-size:9px;font-weight:800;text-transform:uppercase;color:' + labelColor + ';text-align:center;margin-bottom:4px">' + dayNames[idx] + ' ' + d.getDate() + '</div>' +
+      evHtml + '</div>';
+  }).join('');
+
+  const recentMails = allMails.filter(function(m) {
+    if (!m.date) return false;
+    const d = new Date(m.date);
+    return d >= monday && d <= now;
+  }).slice(0, 5);
+  const progMails = document.getElementById('prog-mails');
+  if (!recentMails.length) {
+    progMails.innerHTML = '<div style="color:var(--grey);font-size:10px;padding:2px 0">Aucun mail cette semaine</div>';
+  } else {
+    progMails.innerHTML = recentMails.map(function(m) {
+      const d = m.date ? new Date(m.date) : null;
+      const ds = d ? d.toLocaleDateString("fr-FR",{weekday:"short",day:"2-digit",month:"2-digit"}) : "—";
+      return '<div style="display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid var(--bl);font-size:10px;white-space:nowrap;overflow:hidden">' +
+        '<span class="mtag ' + tagClass(m.tag) + '" style="font-size:7px;flex:none">' + (m.tag||"?") + '</span>' +
+        '<span class="mono" style="color:var(--grey);flex:none">' + ds + '</span>' +
+        '<span style="overflow:hidden;text-overflow:ellipsis">' + (m.objet||"").substring(0,70) + '</span></div>';
+    }).join('');
+  }
+
+  const opts = {day:"2-digit", month:"2-digit"};
+  const wLabel = "Semaine du " + monday.toLocaleDateString("fr-FR",opts) + " au " + sunday.toLocaleDateString("fr-FR",opts);
+  document.getElementById('prog-synthese').innerHTML = '<div class="evl">SYNTHÈSE — ' + wLabel + '</div>' + "⚡ <strong>Rendez-vous clé mercredi 09/09 à 14h à la Présidence du Gouvernement</strong>, à la demande de Franck LICHA (conseiller auprès de la Présidence) — préparé en amont avec Marie-Laure MESTRE mardi 08/09 à 10h30. Première étape vers la validation gouvernementale attendue pour JAL-001.<br><br><strong>Ordre de présentation recommandé :</strong> 1) les 4 arbitrages normatifs bloquants (DEC-009 à DEC-012 — modèle OMS, création du CI-SIS NC, référentiel qualité HAS, modèle de maturité HIMSS EMRAM), préalables à la validation du RACI Écosystème e-Santé NC ; 2) l'identitovigilance / index patient territorial (CHT-007, T3, RISK-FDR-005) seulement ensuite, une fois la gouvernance actée — c'est un chantier technique qui dépend de cette validation, pas un préalable à elle.<br><br>Par ailleurs, l'échéance contractuelle <strong>J-16 (06/09)</strong> est passée cette semaine : les 4 livrables Phase 1 (DEL-001 à DEL-004) sont produits, il reste la validation et signature de Marie-Laure MESTRE sur DEL-001 v1.4.";
+}
+
+
+function filterMails(tag) {
+  document.querySelectorAll('[id^="fm-"]').forEach(b=>{b.style.background='#fff';b.style.color='var(--ink)';});
+  const btn = document.getElementById('fm-'+(tag==='all'?'all':tag));
+  if(btn){btn.style.background='var(--nc)';btn.style.color='#fff';}
+  const filtered = tag==='all' ? allMails : allMails.filter(m=>m.tag===tag);
+  renderMails(filtered);
+}
+
+function filterReunions(val) {
+  const filtered = val==='all' ? allReunions : allReunions.filter(r=>r.statut===val||r.tag===val);
+  renderReunions(filtered);
+}
+
+// Charger les données au démarrage (données statiques injectées)
+// Initialisation au chargement de la page
+window.addEventListener('DOMContentLoaded', () => {
+  loadMailData().then(() => loadReunionData());
+  renderActions();
+  renderRisks();
+  renderDecisions();
+  renderDeliverables();
+  renderMilestones();
+  renderTimeline();
+  renderReports();
+  updateHeaderDate();
+  renderStatuses();
+});
+
+// ==== TIMELINE — Gantt réel positionné par dates, servi dynamiquement depuis DASS Timeline ====
+const TIMELINE_DATA_RAW = [];
+const TIMELINE_WRITE_URL = 'https://izharm.app.n8n.cloud/webhook/dass-cockpit-v3-timeline';
+const TL_EPOCH = new Date('2026-07-06T00:00:00');
+const TL_END = new Date('2027-07-31T00:00:00');
+const TL_TOTAL_DAYS = (TL_END - TL_EPOCH) / 86400000;
+
+function tlPct(dateStr) {
+  if (!dateStr) return null;
+  const d = new Date(dateStr + 'T00:00:00');
+  if (isNaN(d)) return null;
+  return Math.max(0, Math.min(100, ((d - TL_EPOCH) / 86400000 / TL_TOTAL_DAYS) * 100));
+}
+
+function tlStatusColor(status) {
+  if (status === 'TERMINÉ') return '#0f7a3d';
+  if (status === 'BLOQUÉ' || status === 'EN RETARD') return '#b01e0e';
+  if (status === 'EN COURS') return '#c9700a';
+  return '#4a6b8a'; // PLANIFIÉ — bleu-gris, distinct du gris baseline
+}
+
+function parseFrDate(str) {
+  // extrait JJ/MM/AAAA d'une chaîne type "06/09/2026 ⚡ J-16"
+  if (!str) return null;
+  const m = str.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+  if (!m) return null;
+  return `${m[3]}-${m[2]}-${m[1]}`;
+}
+
+function renderMacroTimeline() {
+  const macroEl = document.getElementById('timeline-macro');
+  if (!macroEl) return;
+  const mils = (MILESTONES_DATA_RAW || []).filter(m => !m.archived_at).slice().sort((a,b) => a.milestone_id.localeCompare(b.milestone_id));
+  if (mils.length === 0) { macroEl.innerHTML = ''; return; }
+
+  let prevEnd = TL_EPOCH;
+  const bars = mils.map(m => {
+    const endIso = parseFrDate(m.echeance);
+    const endDate = endIso ? new Date(endIso + 'T00:00:00') : null;
+    const startPct = ((prevEnd - TL_EPOCH) / 86400000 / TL_TOTAL_DAYS) * 100;
+    const endPct = endDate ? ((endDate - TL_EPOCH) / 86400000 / TL_TOTAL_DAYS) * 100 : startPct + 5;
+    if (endDate) prevEnd = endDate;
+    const isDone = /PRODUIT|FAIT|COMPL/i.test(m.statut || '') || (endDate && endDate < new Date() && !/FIN CONTRAT/i.test(m.statut||''));
+    const isCurrent = endDate && new Date() < endDate && (new Date() - (endPct>0? new Date(prevEnd):TL_EPOCH)) ;
+    const color = /4\/4|PRODUIT|FAIT|COMPL/i.test(m.statut||'') ? '#0f7a3d' : (endDate && endDate > new Date() && startPct <= (((new Date()-TL_EPOCH)/86400000/TL_TOTAL_DAYS)*100) ? '#c9700a' : '#4a6b8a');
+    return { m, startPct, endPct, color };
+  });
+
+  macroEl.innerHTML = `<div style="position:relative;height:34px;margin-left:220px">
+    ${bars.map(b => `<div title="${b.m.milestone_id} — ${b.m.intitule}" style="position:absolute;left:${b.startPct}%;width:${Math.max(b.endPct-b.startPct,1)}%;top:2px;height:28px;background:${b.color};border:2px solid #fff;box-shadow:0 0 0 1px var(--ink);display:flex;align-items:center;justify-content:center;overflow:hidden">
+      <span style="color:#fff;font-size:9px;font-weight:700;white-space:nowrap;padding:0 4px">${b.m.milestone_id}</span>
+    </div>`).join('')}
+  </div>
+  <div style="margin-left:220px;position:relative;height:14px">
+    ${bars.map(b => `<div style="position:absolute;left:${b.startPct}%;width:${Math.max(b.endPct-b.startPct,1)}%;font-size:8px;color:var(--grey);text-align:center;overflow:hidden;white-space:nowrap">${b.m.statut}</div>`).join('')}
+  </div>`;
+}
+
+function findChantier(id) { return TIMELINE_DATA_RAW.find(c => c.chantier_id === id); }
+
+// ==== NIVEAU 2 — Phasage T1-T4 du projet eSanté NC (source : PPT Gouvernement NC) ====
+const TRIMESTRES_DEF = [
+  { id: 'T1', label: 'Gouvernance & arbitrages', mois: 'Mois 1-3', start: '2026-07-06', end: '2026-10-05' },
+  { id: 'T2', label: 'Pilote IPS / EVASAN', mois: 'Mois 4-6', start: '2026-10-06', end: '2027-01-05' },
+  { id: 'T3', label: 'Consolidation & télésanté', mois: 'Mois 7-9', start: '2027-01-06', end: '2027-04-05' },
+  { id: 'T4', label: 'Citoyens & bilan', mois: 'Mois 10-12', start: '2027-04-06', end: '2027-07-06' }
+];
+
+function renderTrimestres() {
+  const el = document.getElementById('timeline-trimestres');
+  if (!el) return;
+  const today = new Date();
+  el.innerHTML = `<div style="position:relative;height:60px;margin-left:220px">
+    ${TRIMESTRES_DEF.map(t => {
+      const chantiers = (TIMELINE_DATA_RAW || []).filter(c => c.trimestre === t.id && !c.archived_at);
+      const nBloque = chantiers.filter(c => c.status === 'BLOQUÉ' || c.status === 'EN RETARD').length;
+      const isCurrent = today >= new Date(t.start) && today <= new Date(t.end);
+      const bg = nBloque > 0 ? '#b01e0e' : (isCurrent ? '#c9700a' : '#4a6b8a');
+      const left = tlPct(t.start);
+      const right = tlPct(t.end);
+      const width = Math.max((right ?? 100) - (left ?? 0), 1);
+      return `<div style="position:absolute;left:${left}%;width:${width}%;top:0;height:56px;background:${bg};color:#fff;padding:6px 8px;border:2px solid ${isCurrent?'#000':'#fff'};overflow:hidden;box-sizing:border-box">
+        ${isCurrent ? '<div style="position:absolute;top:-9px;left:8px;background:#000;color:#fff;font-size:8px;padding:1px 5px;white-space:nowrap">AUJOURD\\\'HUI</div>' : ''}
+        <div style="font-size:12px;font-weight:700">${t.id} <span style="font-weight:400;opacity:0.85;font-size:9px">${t.mois}</span></div>
+        <div style="font-size:10px;font-weight:600;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t.label}</div>
+        <div style="font-size:8px;margin-top:3px;opacity:0.9">${chantiers.length} chantier(s)${nBloque?' · '+nBloque+' bloqué(s)':''}</div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function renderTimeline() {
+  const monthsEl = document.getElementById('timeline-months');
+  const bodyEl = document.getElementById('timeline-body');
+  const summaryEl = document.getElementById('timeline-summary');
+  if (!bodyEl) return;
+
+  // Graduation mensuelle
+  if (monthsEl) {
+    const months = ['Juil26','Août26','Sep26','Oct26','Nov26','Déc26','Jan27','Fév27','Mar27','Avr27','Mai27','Jun27','Jul27'];
+    let mHtml = '';
+    for (let i = 0; i < months.length; i++) {
+      const d = new Date(2026, 6 + i, 6);
+      const pct = ((d - TL_EPOCH) / 86400000 / TL_TOTAL_DAYS) * 100;
+      mHtml += `<div style="position:absolute;left:${pct}%;top:0;font-size:9px;font-weight:700;border-left:1px solid var(--ink);padding-left:2px">${months[i]}</div>`;
+    }
+    const todayPct = ((new Date() - TL_EPOCH) / 86400000 / TL_TOTAL_DAYS) * 100;
+    mHtml += `<div id="tl-today-line" style="position:absolute;left:${todayPct}%;top:0;height:2000px;width:3px;background:#e60000;z-index:5"></div>`;
+    monthsEl.innerHTML = mHtml;
+  }
+  renderMacroTimeline();
+  renderTrimestres();
+
+  const rows = (TIMELINE_DATA_RAW || []).filter(c => !c.archived_at);
+  if (rows.length === 0) { bodyEl.innerHTML = '<div style="color:var(--grey);padding:20px;text-align:center">Aucun chantier</div>'; return; }
+
+  if (summaryEl) {
+    const bloque = rows.filter(c => c.status === 'BLOQUÉ' || c.status === 'EN RETARD').length;
+    const termine = rows.filter(c => c.status === 'TERMINÉ').length;
+    summaryEl.textContent = `${rows.length} chantiers · ${termine} terminé(s) · ${bloque} bloqué(s)/en retard`;
+  }
+
+  function chantierRow(c) {
+    const blStart = tlPct(c.baseline_start), blEnd = tlPct(c.baseline_end);
+    const fcStart = tlPct(c.forecast_start) ?? blStart, fcEnd = tlPct(c.forecast_end) ?? blEnd;
+    const pct = parseInt(c.pct_complete) || 0;
+    const color = tlStatusColor(c.status);
+    const programTag = c.programme ? `<span style="font-size:8px;color:#fff;font-weight:700;background:var(--ink);padding:1px 4px;border-radius:2px">${c.programme}</span> ` : '';
+    const baselineBar = (blStart !== null && blEnd !== null) ? `<div style="position:absolute;left:${blStart}%;width:${Math.max(blEnd-blStart,0.5)}%;top:1px;height:5px;background:repeating-linear-gradient(45deg,#fff,#fff 2px,#333 2px,#333 4px);border:1px solid #333"></div>` : '';
+    const forecastBar = (fcStart !== null && fcEnd !== null) ? `<div style="position:absolute;left:${fcStart}%;width:${Math.max(fcEnd-fcStart,0.5)}%;top:8px;height:13px;background:${color};border:1px solid #000"><div style="height:100%;width:${pct}%;background:rgba(255,255,255,0.55)"></div></div>` : '';
+    return `<div class="clickrow" onclick="editChantier('${c.chantier_id}')" style="display:flex;align-items:center;padding:5px 0;border-bottom:1px dotted var(--bl)">
+      <div style="width:210px;flex-shrink:0;font-size:10px;padding-right:8px;padding-left:14px">${programTag}<span class="bold">${c.label}</span><br><span style="font-size:8px;color:var(--grey)">${c.status} · ${pct}%${c.blocked_by ? ' · bloqué par '+c.blocked_by : ''}</span></div>
+      <div style="position:relative;flex:1;height:22px">${baselineBar}${forecastBar}</div>
+    </div>`;
+  }
+
+  const orphans = rows.filter(c => !c.trimestre);
+  bodyEl.innerHTML = TRIMESTRES_DEF.map(t => {
+    const chantiers = rows.filter(c => c.trimestre === t.id);
+    if (chantiers.length === 0) return '';
+    return `<div style="margin-top:6px">
+      <div style="font-size:10px;font-weight:700;color:#fff;background:#4a6b8a;padding:3px 8px;display:inline-block">${t.id} — ${t.label}</div>
+      ${chantiers.map(chantierRow).join('')}
+    </div>`;
+  }).join('') + (orphans.length ? `<div style="margin-top:6px"><div style="font-size:10px;font-weight:700;color:#fff;background:var(--grey);padding:3px 8px;display:inline-block">Non rattaché à un trimestre</div>${orphans.map(chantierRow).join('')}</div>` : '');
+}
+
+function editChantier(id) {
+  const c = findChantier(id); if (!c) return;
+  const body = `
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div><label style="font-size:10px;color:var(--grey);font-weight:700">LIBELLÉ</label>
+        <input id="etl-label" value="${(c.label||'').replace(/"/g,'&quot;')}" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px"></div>
+      <div style="display:flex;gap:8px">
+        <div style="flex:1"><label style="font-size:10px;color:var(--grey);font-weight:700">DÉBUT PRÉVU (baseline)</label>
+          <input id="etl-bl-start" type="date" value="${c.baseline_start||''}" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px"></div>
+        <div style="flex:1"><label style="font-size:10px;color:var(--grey);font-weight:700">FIN PRÉVUE (baseline)</label>
+          <input id="etl-bl-end" type="date" value="${c.baseline_end||''}" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px"></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <div style="flex:1"><label style="font-size:10px;color:var(--grey);font-weight:700">DÉBUT PRÉVISIONNEL (forecast)</label>
+          <input id="etl-fc-start" type="date" value="${c.forecast_start||''}" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px"></div>
+        <div style="flex:1"><label style="font-size:10px;color:var(--grey);font-weight:700">FIN PRÉVISIONNELLE (forecast)</label>
+          <input id="etl-fc-end" type="date" value="${c.forecast_end||''}" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px"></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <div style="flex:1"><label style="font-size:10px;color:var(--grey);font-weight:700">% AVANCEMENT</label>
+          <input id="etl-pct" type="number" min="0" max="100" value="${c.pct_complete||0}" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px"></div>
+        <div style="flex:1"><label style="font-size:10px;color:var(--grey);font-weight:700">STATUT</label>
+          <select id="etl-status" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px">
+            ${['PLANIFIÉ','EN COURS','EN RETARD','BLOQUÉ','TERMINÉ'].map(s => `<option value="${s}"${c.status===s?' selected':''}>${s}</option>`).join('')}
+          </select></div>
+      </div>
+      <div><label style="font-size:10px;color:var(--grey);font-weight:700">BLOQUÉ PAR (ex: JAL-001)</label>
+        <input id="etl-blocked" value="${(c.blocked_by||'').replace(/"/g,'&quot;')}" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px"></div>
+      <div><label style="font-size:10px;color:var(--grey);font-weight:700">NOTES</label>
+        <textarea id="etl-notes" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px;min-height:40px">${(c.notes||'').replace(/</g,'&lt;')}</textarea></div>
+      <div id="etl-status-msg" style="font-size:11px"></div>
+    </div>`;
+  const ftr = `
+    <button onclick="saveChantier('${id}')" style="background:var(--ink);color:#fff;border:none;padding:8px 16px;font-size:11px;font-weight:600;cursor:pointer;margin-right:8px">💾 Enregistrer</button>
+    <button onclick="closePanel()" style="background:var(--grb);border:1px solid var(--border);padding:8px 16px;font-size:11px;font-weight:600;cursor:pointer">✕ Annuler</button>`;
+  openPanel(id, c.label, body, ftr);
+}
+
+async function saveChantier(id) {
+  const msg = document.getElementById('etl-status-msg');
+  msg.textContent = 'Enregistrement...'; msg.style.color = 'var(--grey)';
+  const payload = {
+    chantier_id: id, key: ACTIONS_WRITE_KEY,
+    label: document.getElementById('etl-label').value,
+    baseline_start: document.getElementById('etl-bl-start').value,
+    baseline_end: document.getElementById('etl-bl-end').value,
+    forecast_start: document.getElementById('etl-fc-start').value,
+    forecast_end: document.getElementById('etl-fc-end').value,
+    pct_complete: document.getElementById('etl-pct').value,
+    status: document.getElementById('etl-status').value,
+    blocked_by: document.getElementById('etl-blocked').value,
+    notes: document.getElementById('etl-notes').value
+  };
+  try {
+    const res = await fetch(TIMELINE_WRITE_URL, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    const result = await res.json();
+    if (result.success) {
+      msg.textContent = '✓ Enregistré'; msg.style.color = 'var(--green)';
+      Object.assign(findChantier(id), payload);
+      renderTimeline();
+      setTimeout(closePanel, 800);
+    } else {
+      msg.textContent = '✗ Erreur : ' + result.error; msg.style.color = 'var(--red)';
+    }
+  } catch(e) {
+    msg.textContent = '✗ Erreur réseau : ' + e.message; msg.style.color = 'var(--red)';
+  }
+}
+
+// ==== MILESTONES — données servies dynamiquement depuis la table n8n DASS Milestones ====
+const MILESTONES_DATA_RAW = [];
+const MILESTONES_WRITE_URL = 'https://izharm.app.n8n.cloud/webhook/dass-cockpit-v3-milestones';
+
+function findMilestone(id) { return MILESTONES_DATA_RAW.find(m => m.milestone_id === id); }
+
+function renderMilestones() {
+  const body = document.getElementById('milestones-body');
+  if (!body) return;
+  const rows = (MILESTONES_DATA_RAW || []).filter(m => !m.archived_at);
+  if (rows.length === 0) { body.innerHTML = '<div style="text-align:center;color:var(--grey);padding:20px">Aucun jalon</div>'; return; }
+  body.innerHTML = rows.map(m => {
+    const isDone = /PRODUIT|FAIT|COMPL/i.test(m.statut || '');
+    const isFin = /FIN CONTRAT/i.test(m.statut || '');
+    const dot = isDone ? 'g' : 'gr';
+    const dotIcon = isDone ? '✓' : '○';
+    const tagClass = isDone ? 'cb-green' : (isFin ? 'cb-blue' : 'cb-grey');
+    return `<div class="tli clickrow" onclick="editMilestone('${m.milestone_id}')"><div class="tldot ${dot}">${dotIcon}</div><div><div class="tlname">${m.milestone_id} · ${m.phase_num} — ${m.intitule}</div><div class="tldet">${m.echeance} · ${m.livrables_lies} · ${m.contenu_principal}</div><span class="tltag ${tagClass}">${m.statut}</span></div></div>`;
+  }).join('');
+}
+
+function editMilestone(id) {
+  const m = findMilestone(id); if (!m) return;
+  const bodyHtml = `
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div><label style="font-size:10px;color:var(--grey);font-weight:700">INTITULÉ</label>
+        <input id="em-intitule" value="${(m.intitule||'').replace(/"/g,'&quot;')}" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px"></div>
+      <div><label style="font-size:10px;color:var(--grey);font-weight:700">ÉCHÉANCE</label>
+        <input id="em-echeance" value="${(m.echeance||'').replace(/"/g,'&quot;')}" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px"></div>
+      <div><label style="font-size:10px;color:var(--grey);font-weight:700">CONTENU PRINCIPAL</label>
+        <textarea id="em-contenu" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px;min-height:50px">${(m.contenu_principal||'').replace(/"/g,'&quot;')}</textarea></div>
+      <div><label style="font-size:10px;color:var(--grey);font-weight:700">STATUT</label>
+        <input id="em-statut" value="${(m.statut||'').replace(/"/g,'&quot;')}" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px" placeholder="ex: À VENIR, EN COURS, 4/4 PRODUITS, FIN CONTRAT"></div>
+      <div id="em-status-msg" style="font-size:11px"></div>
+    </div>`;
+  const ftr = `
+    <button onclick="saveMilestone('${id}')" style="background:var(--ink);color:#fff;border:none;padding:8px 16px;font-size:11px;font-weight:600;cursor:pointer;margin-right:8px">💾 Enregistrer</button>
+    <button onclick="closePanel()" style="background:var(--grb);border:1px solid var(--border);padding:8px 16px;font-size:11px;font-weight:600;cursor:pointer">✕ Annuler</button>`;
+  openPanel(`${id} — ${m.phase_num}`, 'Modifier ce jalon', bodyHtml, ftr);
+}
+
+async function saveMilestone(id) {
+  const msg = document.getElementById('em-status-msg');
+  msg.textContent = 'Enregistrement...'; msg.style.color = 'var(--grey)';
+  const payload = {
+    milestone_id: id, key: ACTIONS_WRITE_KEY,
+    intitule: document.getElementById('em-intitule').value,
+    echeance: document.getElementById('em-echeance').value,
+    contenu_principal: document.getElementById('em-contenu').value,
+    statut: document.getElementById('em-statut').value
+  };
+  try {
+    const res = await fetch(MILESTONES_WRITE_URL, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    const result = await res.json();
+    if (result.success) {
+      msg.textContent = '✓ Enregistré'; msg.style.color = 'var(--green)';
+      Object.assign(findMilestone(id), payload);
+      renderMilestones();
+      setTimeout(closePanel, 800);
+    } else {
+      msg.textContent = '✗ Erreur : ' + result.error; msg.style.color = 'var(--red)';
+    }
+  } catch(e) {
+    msg.textContent = '✗ Erreur réseau : ' + e.message; msg.style.color = 'var(--red)';
+  }
+}
+
+// ==== BACKLOG ACTIONS — données servies dynamiquement depuis la table n8n DASS Action Backlog ====
+// (injectées par le workflow "DASS - Cockpit Web Serve" au moment de la requête)
+const ACTIONS_DATA_RAW = [];
+
+function renderActions() {
+  const tbody = document.getElementById('backlog-tbody');
+  if (!tbody) return;
+  if (!ACTIONS_DATA_RAW || ACTIONS_DATA_RAW.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--grey);padding:20px">Aucune action — vérifier la connexion à la table n8n</td></tr>';
+    return;
+  }
+  const rows = ACTIONS_DATA_RAW.filter(a => !a.archived_at);
+  document.querySelectorAll('.backlog-count').forEach(el => el.textContent = rows.length);
+
+  tbody.innerHTML = rows.map(a => {
+    const bg = a.row_bg ? ` style="background:var(--${a.row_bg})"` : '';
+    const echDisplay = a.echeance_urgent
+      ? `<td style="color:var(--red);font-weight:700">${a.echeance}</td>`
+      : `<td class="mono">${a.echeance || ''}</td>`;
+    const isJal = a.jal001_wait ? ' jal001-backlog-wait' : '';
+    const pillIcon = (a.pill_class === 'p-g') ? '✓ ' : '';
+    return `<tr class="clickrow"${bg} onclick="editAction('${a.action_id}')"><td class="mono">${a.action_id}</td><td class="bold">${a.description}</td><td>${a.responsable || ''}</td>${echDisplay}<td><span class="pill ${a.pill_class}${isJal}">${pillIcon}${a.statut}</span></td></tr>`;
+  }).join('');
+}
+
+// ==== ÉDITEUR INTERACTIF ACTIONS ====
+const ACTIONS_WRITE_URL = 'https://izharm.app.n8n.cloud/webhook/dass-cockpit-v3-actions';
+const ACTIONS_WRITE_KEY = 'dass-pmo-2026-9f3a7c';
+
+function findAction(id) {
+  return ACTIONS_DATA_RAW.find(a => a.action_id === id);
+}
+
+function editAction(id) {
+  const a = id === 'NEW' ? { action_id: 'NEW', description: '', responsable: '', echeance: '', statut: 'Ouvert', notes: '' } : findAction(id);
+  if (!a) return;
+  const isNew = id === 'NEW';
+  const body = `
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div><label style="font-size:10px;color:var(--grey);font-weight:700">DESCRIPTION</label>
+        <textarea id="ed-description" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px;min-height:50px">${(a.description||'').replace(/"/g,'&quot;')}</textarea></div>
+      <div><label style="font-size:10px;color:var(--grey);font-weight:700">RESPONSABLE</label>
+        <input id="ed-responsable" value="${(a.responsable||'').replace(/"/g,'&quot;')}" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px"></div>
+      <div><label style="font-size:10px;color:var(--grey);font-weight:700">ÉCHÉANCE</label>
+        <input id="ed-echeance" value="${(a.echeance||'').replace(/"/g,'&quot;')}" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px"></div>
+      <div><label style="font-size:10px;color:var(--grey);font-weight:700">STATUT</label>
+        <select id="ed-statut" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px">
+          ${['Ouvert','En cours','À planifier','À transmettre','À engager','RÉALISÉ','PRODUIT'].map(s => `<option value="${s}"${a.statut===s?' selected':''}>${s}</option>`).join('')}
+        </select></div>
+      <div><label style="font-size:10px;color:var(--grey);font-weight:700">PRIORITÉ</label>
+        <select id="ed-priorite" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px">
+          <option value=""${!a.priorite?' selected':''}>—</option>
+          <option value="HAUTE"${a.priorite==='HAUTE'?' selected':''}>HAUTE</option>
+          <option value="CRITIQUE"${a.priorite==='CRITIQUE'?' selected':''}>CRITIQUE</option>
+        </select></div>
+      <div id="ed-status-msg" style="font-size:11px"></div>
+    </div>`;
+  const ftr = `
+    <button onclick="saveAction('${a.action_id}')" style="background:var(--ink);color:#fff;border:none;padding:8px 16px;font-size:11px;font-weight:600;cursor:pointer;margin-right:8px">💾 Enregistrer</button>
+    <button onclick="closePanel()" style="background:var(--grb);border:1px solid var(--border);padding:8px 16px;font-size:11px;font-weight:600;cursor:pointer">✕ Annuler</button>`;
+  openPanel(isNew ? 'Nouvelle action' : a.action_id, isNew ? 'Création' : 'Modifier cette action', body, ftr);
+}
+
+async function saveAction(id) {
+  const msg = document.getElementById('ed-status-msg');
+  msg.textContent = 'Enregistrement...'; msg.style.color = 'var(--grey)';
+  const payload = {
+    action_id: id, key: ACTIONS_WRITE_KEY,
+    description: document.getElementById('ed-description').value,
+    responsable: document.getElementById('ed-responsable').value,
+    echeance: document.getElementById('ed-echeance').value,
+    statut: document.getElementById('ed-statut').value,
+    priorite: document.getElementById('ed-priorite').value
+  };
+  try {
+    const res = await fetch(ACTIONS_WRITE_URL, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    const result = await res.json();
+    if (result.success) {
+      msg.textContent = '✓ Enregistré'; msg.style.color = 'var(--green)';
+      // Mise à jour locale immédiate (sans recharger la page)
+      let a = findAction(id);
+      if (!a) { a = { action_id: result.action_id }; ACTIONS_DATA_RAW.push(a); }
+      Object.assign(a, payload);
+      const statut = a.statut || '';
+      a.pill_class = /RÉALISÉ|PRODUIT/i.test(statut) ? 'p-g' : /ouvert|à engager/i.test(statut) ? 'p-r' : /en cours|à planifier|à transmettre/i.test(statut) ? 'p-a' : 'p-gr';
+      a.row_bg = a.pill_class === 'p-g' ? 'gb' : (a.priorite === 'CRITIQUE' ? 'rb' : '');
+      renderActions();
+      setTimeout(closePanel, 800);
+    } else {
+      msg.textContent = '✗ Erreur : ' + result.error; msg.style.color = 'var(--red)';
+    }
+  } catch(e) {
+    msg.textContent = '✗ Erreur réseau : ' + e.message; msg.style.color = 'var(--red)';
+  }
+}
+
+// ==== RISQUES — données servies dynamiquement depuis la table n8n DASS Risks ====
+const RISKS_DATA_RAW = [];
+
+function riskCardHTML(r) {
+  return `<div class="rr clickrow" onclick="editRisk('${r.risk_id}')"><div class="rsev"><span class="pill ${r.pill_class}">${r.severity}</span></div><div class="rid">${r.risk_id}</div><div class="rb2"><div class="rt">${r.title}</div><div class="rd">${r.description || ''}</div></div></div>`;
+}
+
+function renderRisks() {
+  const active = (RISKS_DATA_RAW || []).filter(r => !r.archived_at);
+  const critiques = active.filter(r => r.severity === 'CRITIQUE');
+  const autres = active.filter(r => r.severity !== 'CRITIQUE');
+
+  const top = document.getElementById('dashboard-risks-top');
+  if (top) top.innerHTML = active.slice(0, 3).map(riskCardHTML).join('');
+
+  const critBody = document.getElementById('risks-critical-body');
+  if (critBody) critBody.innerHTML = critiques.map(riskCardHTML).join('');
+
+  const highBody = document.getElementById('risks-high-body');
+  if (highBody) highBody.innerHTML = autres.map(riskCardHTML).join('');
+
+  document.querySelectorAll('.risks-critical-count').forEach(el => el.textContent = critiques.length + 1);
+  document.querySelectorAll('.risks-high-count').forEach(el => el.textContent = autres.length);
+}
+
+// ==== ÉDITEUR INTERACTIF RISQUES ====
+const RISKS_WRITE_URL = 'https://izharm.app.n8n.cloud/webhook/dass-cockpit-v3-risks';
+
+function findRisk(id) {
+  return RISKS_DATA_RAW.find(r => r.risk_id === id);
+}
+
+function editRisk(id) {
+  const r = id === 'NEW' ? { risk_id: 'NEW', title: '', description: '', severity: 'HAUTE' } : findRisk(id);
+  if (!r) return;
+  const isNew = id === 'NEW';
+  const body = `
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div><label style="font-size:10px;color:var(--grey);font-weight:700">TITRE</label>
+        <input id="er-title" value="${(r.title||'').replace(/"/g,'&quot;')}" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px"></div>
+      <div><label style="font-size:10px;color:var(--grey);font-weight:700">DESCRIPTION</label>
+        <textarea id="er-description" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px;min-height:50px">${(r.description||'').replace(/"/g,'&quot;')}</textarea></div>
+      <div><label style="font-size:10px;color:var(--grey);font-weight:700">SÉVÉRITÉ</label>
+        <select id="er-severity" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px">
+          ${['CRITIQUE','HAUTE','GÉRÉE'].map(s => `<option value="${s}"${r.severity===s?' selected':''}>${s}</option>`).join('')}
+        </select></div>
+      <div id="er-status-msg" style="font-size:11px"></div>
+    </div>`;
+  const ftr = `
+    <button onclick="saveRisk('${r.risk_id}')" style="background:var(--ink);color:#fff;border:none;padding:8px 16px;font-size:11px;font-weight:600;cursor:pointer;margin-right:8px">💾 Enregistrer</button>
+    <button onclick="closePanel()" style="background:var(--grb);border:1px solid var(--border);padding:8px 16px;font-size:11px;font-weight:600;cursor:pointer">✕ Annuler</button>`;
+  openPanel(isNew ? 'Nouveau risque' : r.risk_id, isNew ? 'Création' : 'Modifier ce risque', body, ftr);
+}
+
+async function saveRisk(id) {
+  const msg = document.getElementById('er-status-msg');
+  msg.textContent = 'Enregistrement...'; msg.style.color = 'var(--grey)';
+  const payload = {
+    risk_id: id, key: ACTIONS_WRITE_KEY,
+    title: document.getElementById('er-title').value,
+    description: document.getElementById('er-description').value,
+    severity: document.getElementById('er-severity').value,
+    risk_score: document.getElementById('er-severity').value,
+    status: document.getElementById('er-severity').value
+  };
+  try {
+    const res = await fetch(RISKS_WRITE_URL, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    const result = await res.json();
+    if (result.success) {
+      msg.textContent = '✓ Enregistré'; msg.style.color = 'var(--green)';
+      let r = findRisk(id);
+      if (!r) { r = { risk_id: result.risk_id }; RISKS_DATA_RAW.push(r); }
+      Object.assign(r, payload);
+      r.pill_class = r.severity === 'CRITIQUE' ? 'p-r' : (r.severity === 'GÉRÉE' ? 'p-g' : 'p-a');
+      renderRisks();
+      setTimeout(closePanel, 800);
+    } else {
+      msg.textContent = '✗ Erreur : ' + result.error; msg.style.color = 'var(--red)';
+    }
+  } catch(e) {
+    msg.textContent = '✗ Erreur réseau : ' + e.message; msg.style.color = 'var(--red)';
+  }
+}
+
+// ==== DÉCISIONS — données servies dynamiquement depuis la table n8n DASS Decisions ====
+const DECISIONS_DATA_RAW = [];
+const DECISIONS_WRITE_URL = 'https://izharm.app.n8n.cloud/webhook/dass-cockpit-v3-decisions';
+
+function decisionPill(status) {
+  if (/^décidée/i.test(status)) return 'p-g';
+  if (/^rejetée|^obsolète/i.test(status)) return 'p-gr';
+  if (/^à arbitrer/i.test(status)) return 'p-r';
+  return 'p-a'; // À préparer / En attente
+}
+
+function renderDecisions() {
+  const tbody = document.getElementById('decisions-tbody');
+  if (!tbody) return;
+  const rows = (DECISIONS_DATA_RAW || []).filter(d => !d.archived_at);
+  document.querySelectorAll('.decisions-count').forEach(el => el.textContent = rows.length);
+  if (rows.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--grey);padding:20px">Aucune décision</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(d => {
+    const pill = decisionPill(d.status || '');
+    return `<tr class="clickrow" onclick="editDecision('${d.decision_id}')"><td class="mono">${d.decision_id}</td><td class="bold">${d.title}</td><td>${d.decision_maker || ''}</td><td><span class="pill ${pill}">${d.status || ''}</span></td><td style="font-size:10px;color:var(--grey)">${d.source_document || ''}</td></tr>`;
+  }).join('');
+}
+
+function findDecision(id) {
+  return DECISIONS_DATA_RAW.find(d => d.decision_id === id);
+}
+
+function editDecision(id) {
+  const d = id === 'NEW' ? { decision_id: 'NEW', title: '', description: '', decision_maker: '', status: 'À préparer' } : findDecision(id);
+  if (!d) return;
+  const isNew = id === 'NEW';
+  const body = `
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div><label style="font-size:10px;color:var(--grey);font-weight:700">TITRE</label>
+        <input id="ed2-title" value="${(d.title||'').replace(/"/g,'&quot;')}" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px"></div>
+      <div><label style="font-size:10px;color:var(--grey);font-weight:700">DESCRIPTION</label>
+        <textarea id="ed2-description" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px;min-height:50px">${(d.description||'').replace(/"/g,'&quot;')}</textarea></div>
+      <div><label style="font-size:10px;color:var(--grey);font-weight:700">DÉCIDEUR</label>
+        <input id="ed2-maker" value="${(d.decision_maker||'').replace(/"/g,'&quot;')}" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px"></div>
+      <div><label style="font-size:10px;color:var(--grey);font-weight:700">STATUT</label>
+        <select id="ed2-status" style="width:100%;padding:6px;border:1px solid var(--border);font-size:12px">
+          ${['À préparer','À arbitrer','En attente','Décidée','Rejetée','Obsolète'].map(s => `<option value="${s}"${d.status===s?' selected':''}>${s}</option>`).join('')}
+        </select></div>
+      <div id="ed2-status-msg" style="font-size:11px"></div>
+    </div>`;
+  const ftr = `
+    <button onclick="saveDecision('${d.decision_id}')" style="background:var(--ink);color:#fff;border:none;padding:8px 16px;font-size:11px;font-weight:600;cursor:pointer;margin-right:8px">💾 Enregistrer</button>
+    <button onclick="closePanel()" style="background:var(--grb);border:1px solid var(--border);padding:8px 16px;font-size:11px;font-weight:600;cursor:pointer">✕ Annuler</button>`;
+  openPanel(isNew ? 'Nouvelle décision' : d.decision_id, isNew ? 'Création' : 'Modifier cette décision', body, ftr);
+}
+
+async function saveDecision(id) {
+  const msg = document.getElementById('ed2-status-msg');
+  msg.textContent = 'Enregistrement...'; msg.style.color = 'var(--grey)';
+  const payload = {
+    decision_id: id, key: ACTIONS_WRITE_KEY,
+    title: document.getElementById('ed2-title').value,
+    description: document.getElementById('ed2-description').value,
+    decision_maker: document.getElementById('ed2-maker').value,
+    status: document.getElementById('ed2-status').value
+  };
+  try {
+    const res = await fetch(DECISIONS_WRITE_URL, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    const result = await res.json();
+    if (result.success) {
+      msg.textContent = '✓ Enregistré'; msg.style.color = 'var(--green)';
+      let d = findDecision(id);
+      if (!d) { d = { decision_id: result.decision_id }; DECISIONS_DATA_RAW.push(d); }
+      Object.assign(d, payload);
+      renderDecisions();
+      setTimeout(closePanel, 800);
+    } else {
+      msg.textContent = '✗ Erreur : ' + result.error; msg.style.color = 'var(--red)';
+    }
+  } catch(e) {
+    msg.textContent = '✗ Erreur réseau : ' + e.message; msg.style.color = 'var(--red)';
+  }
+}
+
+// ==== REPORTS — instantanés hebdomadaires/mensuels générés automatiquement par n8n ====
+const REPORTS_DATA_RAW = [];
+
+function renderReports() {
+  const weeklyEl = document.getElementById('reports-weekly-list');
+  const monthlyEl = document.getElementById('reports-monthly-list');
+  if (!weeklyEl || !monthlyEl) return;
+
+  const rows = (REPORTS_DATA_RAW || []).filter(r => !r.archived_at);
+  document.querySelectorAll('.reports-count').forEach(el => el.textContent = rows.length);
+
+  const weekly = rows.filter(r => r.type === 'WEEKLY').sort((a,b) => (b.generated_at||'').localeCompare(a.generated_at||''));
+  const monthly = rows.filter(r => r.type === 'MONTHLY').sort((a,b) => (b.generated_at||'').localeCompare(a.generated_at||''));
+
+  function reportRow(r) {
+    let stats = {};
+    try { stats = JSON.parse(r.stats_json || '{}'); } catch(e) {}
+    const a = stats.actions || {}, rk = stats.risks || {}, d = stats.decisions || {}, t = stats.timeline || {};
+    const statLine = `${a.total ?? '–'} actions actives · ${rk.critique ?? '–'} risque(s) critique(s) · ${d.attente ?? '–'} décision(s) en attente · ${t.bloque ?? '–'} chantier(s) bloqué(s)`;
+    return `<div class="clickrow" onclick="viewReport('${r.report_id}')" style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border:1px solid var(--border);margin-bottom:6px;background:var(--surface)">
+      <div><span class="bold">${r.period_label}</span><br><span style="font-size:10px;color:var(--grey)">${statLine}</span></div>
+      <div style="font-size:9px;color:var(--grey);text-align:right">Généré le ${r.generated_at || ''}${r.drive_url ? '<br><a href="'+r.drive_url+'" target="_blank" onclick="event.stopPropagation()">📂 Rapport (Drive)</a>' : ''}</div>
+    </div>`;
+  }
+
+  weeklyEl.innerHTML = weekly.length ? weekly.map(reportRow).join('') : '<div style="color:var(--grey);font-size:11px;padding:10px">Aucun rapport hebdomadaire généré pour le moment — le premier sera produit vendredi 18h.</div>';
+  monthlyEl.innerHTML = monthly.length ? monthly.map(reportRow).join('') : '<div style="color:var(--grey);font-size:11px;padding:10px">Aucun rapport mensuel généré pour le moment — le premier sera produit à la fin du mois en cours.</div>';
+}
+
+function viewReport(id) {
+  const r = (REPORTS_DATA_RAW || []).find(x => x.report_id === id);
+  if (!r) return;
+  const ftr = r.drive_url ? `<a href="${r.drive_url}" target="_blank">📂 Ouvrir le rapport dans Drive</a>` : '';
+  openPanel(r.period_label, `${r.type === 'WEEKLY' ? 'Rapport hebdomadaire' : 'Rapport mensuel'} · généré le ${r.generated_at}`, r.html_body || '<i>Contenu indisponible</i>', ftr);
+}
+
+// Modifier UNE valeur ici met à jour tous les endroits du cockpit qui l'affichent.
+const STATUS = {
+  JAL001: {
+    icon: '🟢',
+    badgeClass: 'p-a',
+    badgeText: 'EN RÉSOL.',
+    tileClass: 'amber',
+    tileValue: 'AMBRE',
+    tileNote: 'JAL-001 en résolution',
+    label: 'Lettre de mission (ex-arbitrage TUKUMULI)',
+    detail: "TUKUMULI absent jusqu'au 11/09 · Dossier soumis au SG du Gouvernement dans l'intervalle · Entretien 15 min au retour",
+    bannerShort: 'Lettre de mission au retour de TUKUMULI (11/09)',
+    timelineShort: 'Lettre de mission (JAL-001) — TUKUMULI retour 11/09',
+    backlogWaitLabel: 'En attente JAL-001',
+    monitoringColor: 'amber',
+    monitoringText: 'EN COURS DE RÉSOLUTION',
+    footerShort: 'JAL-001 en résolution'
+  }
+};
+
+function renderStatuses() {
+  const s = STATUS.JAL001;
+  const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  const setHTML = (id, val) => { const el = document.getElementById(id); if (el) el.innerHTML = val; };
+
+  setText('jal001-banner', `${s.icon} JAL-001 EN COURS · ${s.bannerShort}`);
+  setText('jal001-tile-val', s.tileValue);
+  setText('jal001-tile-note', s.tileNote);
+  document.querySelectorAll('.jal001-tile').forEach(el => { el.classList.remove('amber','green','red'); el.classList.add(s.tileClass); });
+  document.querySelectorAll('.jal001-tv').forEach(el => { el.classList.remove('amber','green','red'); el.classList.add(s.tileClass); });
+
+  document.querySelectorAll('.jal001-badge').forEach(el => {
+    el.className = 'pill jal001-badge ' + s.badgeClass;
+    el.textContent = s.badgeText;
+  });
+  document.querySelectorAll('.jal001-label').forEach(el => el.textContent = s.label);
+  document.querySelectorAll('.jal001-detail').forEach(el => el.textContent = s.detail);
+  // (ancien élément jal001-timeline retiré — la timeline utilise désormais le Gantt dynamique par chantier)
+  document.querySelectorAll('.jal001-backlog-wait').forEach(el => el.textContent = s.backlogWaitLabel);
+  setHTML('jal001-monitoring', `<span style="color:var(--${s.monitoringColor})">🟡 ${s.monitoringText}</span>`);
+  setText('jal001-footer', s.footerShort);
+
+  // Registre visible de tous les statuts centralisés (auto-généré depuis STATUS)
+  const registryBody = document.getElementById('status-registry-body');
+  if (registryBody) {
+    registryBody.innerHTML = Object.entries(STATUS).map(([key, v]) => `
+      <tr>
+        <td class="mono bold">${key}</td>
+        <td>${v.icon || ''} ${v.label || ''}</td>
+        <td style="font-size:10px;color:var(--grey)">${v.detail || ''}</td>
+      </tr>`).join('');
+  }
+}
+
+function updateHeaderDate() {
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+  document.getElementById('hdr-date').textContent = dateStr;
+
+  const contractStart = new Date('2026-07-06T00:00:00');
+  const monthsElapsed = ((now - contractStart) / (1000*60*60*24*30.44)).toFixed(1);
+  document.getElementById('hdr-mplus').textContent = `M+${monthsElapsed} / M+12`;
+
+  const phase1Deadline = new Date('2026-09-06T00:00:00');
+  const daysLeft = Math.ceil((phase1Deadline - now) / (1000*60*60*24));
+  document.getElementById('hdr-jmoins').textContent = daysLeft >= 0 ? `J-${daysLeft}` : `J+${Math.abs(daysLeft)}`;
+}
+
+function showMail(idx) {
+  const m = allMails[idx];
+  if (!m) return;
+  const d = m.date ? new Date(m.date) : null;
+  const ds = d ? d.toLocaleDateString('fr-FR',{weekday:'long',day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
+  
+  // En-tête du panneau
+  document.getElementById('panel-title').textContent = m.objet || '(sans objet)';
+  document.getElementById('panel-sub').textContent = m.expediteur + ' · ' + ds;
+  
+  // Corps du mail
+  const corps = m.corps || m.snippet || '(contenu non disponible)';
+  const corpsHtml = corps
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/---/g, '<hr style="border:none;border-top:1px solid var(--border);margin:10px 0">')
+    .replace(/\n/g, '<br>');
+  
+  // PJ
+  let pjSection = '';
+  if (m.a_pj && m.nb_pj > 0) {
+    const names = (m.pj_noms||'').split(',').map(p=>p.trim()).filter(Boolean);
+    const urls = (m.pj_drive_urls||'').split(',').map(u=>u.trim()).filter(Boolean);
+    const pjItems = names.map((name,i) => {
+      const url = urls[i] || '';
+      const icon = name.endsWith('.pdf') ? '📄' : name.endsWith('.xlsx') ? '📊' : name.endsWith('.pptx') ? '📊' : name.endsWith('.docx') ? '📝' : '📎';
+      if (url) {
+        return `<a href="${url}" target="_blank" style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bb);border:1px solid var(--border);margin-bottom:6px;text-decoration:none;color:var(--blue);font-size:11px;font-weight:600">
+          ${icon} ${name}
+          <span style="margin-left:auto;font-size:10px;background:var(--nc);color:#fff;padding:2px 8px">⬇ Télécharger</span>
+        </a>`;
+      } else {
+        return `<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--ab);border:1px solid var(--border);margin-bottom:6px;font-size:11px;color:var(--amber)">
+          ${icon} ${name}
+          <span style="margin-left:auto;font-size:10px;color:var(--grey)">Disponible dans Gmail</span>
+        </div>`;
+      }
+    }).join('');
+    pjSection = `<div class="psec" style="margin-top:14px">Pièces jointes (${m.nb_pj})</div>${pjItems}`;
+  }
+  
+  // Corps complet
+  document.getElementById('panel-body').innerHTML = `
+    <div style="margin-bottom:12px">
+      <span class="mtag ${tagClass(m.tag)}" style="font-size:10px">${m.tag}</span>
+      <span style="font-size:10px;color:var(--grey);margin-left:8px">${ds}</span>
+    </div>
+    <div style="font-size:11px;color:var(--grey);margin-bottom:6px">
+      <strong>De :</strong> ${m.expediteur}<br>
+    </div>
+    ${pjSection}
+    <div class="psec" style="margin-top:14px">Contenu</div>
+    <div style="font-size:12px;line-height:1.7;background:var(--surface);padding:12px;border:1px solid var(--bl)">${corpsHtml}</div>
+  `;
+  
+  // Footer
+  document.getElementById('panel-ftr').innerHTML = `
+    <button onclick="closePanel()" style="background:var(--grb);border:1px solid var(--border);padding:8px 16px;font-size:11px;font-weight:600;cursor:pointer">✕ Fermer</button>
+  `;
+  
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('panel').classList.add('open');
+}
+
+</script>
+</body>
+</html>
